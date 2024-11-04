@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema(
         },
 		profilePic: {
 			type: String, //url of a picture 
-			required: true,
             default: null,
 		},
 	},
