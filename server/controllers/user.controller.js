@@ -8,6 +8,9 @@ export const createUser = async (req, res) => {
     if(!user.name || !user.email || !user.password || !user.role){
         return res.status(400).json({success: false, message: "Please provide all fields"});
     }
+    if(user.role != "student" || user.role != "instructor"){
+        return res.status(400).json({success: false, message: "Role invalid"});
+    }
 
     const newUser = new User(user);
 
