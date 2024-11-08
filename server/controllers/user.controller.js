@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 import User from "../models/user.model.js";
 
+const checkUserFields = (user) => {
+    return (!user.name || !user.email || !user.password || !user.role)
+}
+
+const checkUserRole = (user) => {
+    return user.role != "student" && user.role != "instructor";
+}
+
 export const getUserByName = async (req, res) => {
     const {name} = req.params;
 
@@ -20,10 +28,10 @@ export const getUserByName = async (req, res) => {
 export const createUser = async (req, res) => {
     const user = req.body;
 
-    if (!user.name || !user.email || !user.password || !user.role) {
+    if (checkUserFields(user)) {
         return res.status(400).json({ success: false, message: "Please provide all fields" });
     }
-    if (user.role != "student" && user.role != "instructor") {
+    if (checkUserRole(user)) {
         return res.status(400).json({ success: false, message: "Role invalid" });
     }
 
@@ -42,8 +50,11 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const user = req.body;
 
-    if (user.role != "student" && user.role != "instructor") {
-        return res.status(400).json({ success: false, message: "Role must be either 'student' or 'instructor'" });
+    if (checkUserFields(user)) {
+        return res.status(400).json({ success: false, message: "Please provide all fields" });
+    }
+    if (checkUserRole(user)) {
+        return res.status(400).json({ success: false, message: "Role invalid" });
     }
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
