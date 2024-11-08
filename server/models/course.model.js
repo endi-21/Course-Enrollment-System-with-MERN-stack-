@@ -19,6 +19,10 @@ const courseSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId, 
             ref: "User", 
         }],
+		video_url: {
+			type: String,
+			required: true,
+		},
         
 	},
 	{
