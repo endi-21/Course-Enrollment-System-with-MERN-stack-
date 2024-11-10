@@ -31,7 +31,7 @@ export const createCourse = async (req, res) => {
 
     try {
         await newCourse.save();
-        return res.status(200).json({success: true, data: newCourse});
+        return res.status(201).json({success: true, data: newCourse});
     } catch (error) {
         return res.status(500).json({success: false, message: "Server error"});
     }
