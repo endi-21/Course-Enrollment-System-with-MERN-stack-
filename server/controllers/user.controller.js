@@ -18,6 +18,11 @@ export const getUserByName = async (req, res) => {
 
     try {
         const users = await User.find({name});
+
+        if(users.length === 0){
+            return res.status(404).json({success: false, message: "No users found"});
+        }
+
         res.status(200).json({ success: true, data: users });
     } catch (error) {
         console.log("Fetching error: ", error.message);
