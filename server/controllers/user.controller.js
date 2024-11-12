@@ -13,7 +13,7 @@ export const getUserByName = async (req, res) => {
     const {name} = req.params;
 
     if (!name) {
-        return res.status(400).json({ success: false, message: "Please provide an name" });
+        return res.status(400).json({ success: false, message: "Please provide a name" });
     }
 
     try {
