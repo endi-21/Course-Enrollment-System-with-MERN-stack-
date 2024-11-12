@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/:name", getUserByName);
 router.post("/", createUser); 
-router.post("/login", loginUser)
+router.post("/login", loginUser);
 
 //protect middleware
 router.put("/:id", protect, updateUser);

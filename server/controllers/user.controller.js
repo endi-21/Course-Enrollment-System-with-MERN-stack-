@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 import User from "../models/user.model.js";
+import jwt from "jsonwebtoken";
+import bcrypt from 'bcryptjs';
+import { generateToken } from '../utils/jwt.js';
 
 const checkUserFields = (user) => {
     return (!user.name || !user.email || !user.password || !user.role)
@@ -72,6 +75,7 @@ export const loginUser = async (req, res) => {
         const token = generateToken(user);
         res.status(200).json({ success: true, data: { user, token } });
     } catch (error) {
+        console.error("Login Error:", error.message);
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
@@ -92,6 +96,11 @@ export const updateUser = async (req, res) => {
     }
 
     try {
+        // Check if password is being updated
+        if (user.password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(user.password, salt);  // Hash the new password
+        }
         const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
         res.status(200).json({ success: true, data: updatedUser });
     } catch (error) {
