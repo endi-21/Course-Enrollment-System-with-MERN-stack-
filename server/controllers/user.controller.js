@@ -56,6 +56,26 @@ export const createUser = async (req, res) => {
     }
 };
 
+export const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ success: false, message: "Please provide all fields" });
+    }
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ success: false, message: "Invalid email or password" });
+        }
+
+        const token = generateToken(user);
+        res.status(200).json({ success: true, data: { user, token } });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
 export const updateUser = async (req, res) => {
     const { id } = req.params;
     const user = req.body;
