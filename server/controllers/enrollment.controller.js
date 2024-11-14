@@ -1,6 +1,19 @@
 import mongoose from "mongoose";
 import Enrollment from "../models/enrollment.model.js";
 
+const checkEnrollmentFields = (enrollment) => {
+    return (!enrollment.student_id || !enrollment.course_id);
+}
+
+export const getAllEnrollments = async (req, res) => {
+    try {
+        const enrollments = await Enrollment.find({});
+        return res.status(200).json({success: true, data: enrollments});
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+}
+
 export const getEnrollmentById = async (req, res)=> {
     const {id} = req.params;
 
@@ -22,12 +35,58 @@ export const getEnrollmentById = async (req, res)=> {
 };
 
 export const createEnrollment = async (req, res) => {
-    const newEnrollemnt = new Enrollment(req.body);  
+    const enrollment = new Enrollment({
+        ...req.body,
+        start_date: new Date() // start_date is set to the moment the object is created
+    }); 
+
+    if((checkEnrollmentFields(enrollment))){
+        return res.status(400).json({success: false, message: "Please provide all fields"});
+    } 
 
     try {
-        await newEnrollemnt.save();
-        return res.status(201).json({success: true, data: newEnrollemnt})
+        await enrollment.save();
+        return res.status(201).json({success: true, data: enrollment})
     } catch (error) {
         return res.status(500).json({success: false, message: "Server error"})
+    }
+};
+
+export const updateEnrollment = async (req, res) => {
+    const {id} = req.params;
+    const enrollment = req.body;
+
+    if((checkEnrollmentFields(enrollment))){
+        return res.status(400).json({success: false, message: "Please provide all fields"});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ success: false, message: "Invalid Id" });
+    }
+    
+    try {
+        const updatedEnrollment = await Enrollment.findByIdAndUpdate(id, enrollment, {new: true}); 
+        return res.status(200).json({success: true, data: updatedEnrollment});
+    } catch (error) {
+        res.status(200).json({ success: false, message: "Server error" });
+    }
+};
+
+export const deleteEnrollment = async (req, res) => {
+    const {id} = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("Fetching error:", error.message);
+		return res.status(404).json({ success: false, message: "Invalid Id" });
+	}
+
+    try {
+        const deletedEnrollment = await Enrollment.findByIdAndDelete(id);
+        if (!deletedEnrollment) {
+            return res.status(404).json({ success: false, message: "Enrollment not found" });
+        }        
+        return res.status(200).json({ success: true, message: "Enrollment deleted" });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server Error" });
     }
 };

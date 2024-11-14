@@ -5,7 +5,34 @@ const checkCourseFields = (course) => {
     return (!course.title || !course.description || !course.instructor_id || !course.video_url);
 }
 
-export const getCourseByTitle = async (req, res) => {
+export const getAllCourses = async (req, res) => {
+    try {
+        const courses = await Course.find({});
+        return res.status(200).json({success: true, data: courses});
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+}
+
+export const getCourseById = async (req, res) => {
+    const {id} = req.params;
+
+    if (!id) {
+        return res.status(400).json({ success: false, message: "Please provide the ID" });
+    }
+
+    try {
+        const course = await Course.findById(id);
+        if (!course) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+        return res.status(200).json({success: true, data: course})
+    } catch (error) {
+        return res.status(500).json({success: false, message: "Server error"});
+    }
+};
+
+export const getCoursesByTitle = async (req, res) => {
     const {title} = req.params;
 
     if (!title) {
@@ -21,6 +48,7 @@ export const getCourseByTitle = async (req, res) => {
 
         return res.status(200).json({success: true, data: courses})
     } catch (error) {
+        console.log("Fetching error:", error.message);
         return res.status(500).json({success: false, message: "Server error"});
     }
 };
@@ -70,7 +98,10 @@ export const deleteCourse = async (req, res) => {
 	}
 
     try {
-        await Course.findByIdAndDelete(id);
+        const deletedCourse = await Course.findByIdAndDelete(id);
+        if (!deletedCourse) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
         return res.status(200).json({ success: true, message: "Course deleted" });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Server Error" });

@@ -12,7 +12,40 @@ const checkUserRole = (user) => {
     return user.role != "student" && user.role != "instructor";
 }
 
-export const getUserByName = async (req, res) => {
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({});
+        return res.status(200).json({success: true, data: users});
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+}
+
+export const getUserById = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ success: false, message: "Please provide the ID" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ success: false, message: "Invalid ID" });
+    }
+
+    try {
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        return res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        console.log("Fetching error:", error.message);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+export const getUsersByName = async (req, res) => {
     const {name} = req.params;
 
     if (!name) {
@@ -29,7 +62,7 @@ export const getUserByName = async (req, res) => {
         res.status(200).json({ success: true, data: users });
     } catch (error) {
         console.log("Fetching error: ", error.message);
-        res.status(500).json({ success: false, message: "Server Error" });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 };
 
@@ -116,10 +149,13 @@ export const deleteUser = async (req, res) => {
 	}
 
 	try {
-		await User.findByIdAndDelete(id);
+		const deletedUser = await User.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
 		res.status(200).json({ success: true, message: "User deleted" });
 	} catch (error) {
 		console.log("Error in deleting user:", error.message);
-		res.status(500).json({ success: false, message: "Server Error" });
+		res.status(500).json({ success: false, message: "Server error" });
 	}
 };
