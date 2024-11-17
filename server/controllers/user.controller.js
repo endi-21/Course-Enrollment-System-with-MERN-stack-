@@ -83,7 +83,7 @@ export const createUser = async (req, res) => {
         const token = jwt.sign(
             { id: newUser._id, role: newUser.role },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "1d" }
         );
         return res.status(201).json({ success: true, data: newUser, token });
     } catch (error) {
@@ -117,15 +117,12 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const user = req.body;
 
-    if (checkUserFields(user)) {
-        return res.status(400).json({ success: false, message: "Please provide all fields" });
-    }
-    if (checkUserRole(user)) {
-        return res.status(400).json({ success: false, message: "Role invalid" });
-    }
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ success: false, message: "Invalid Id" });
+    }
+
+    if ('role' in user) {
+        return res.status(400).json({ success: false, message: "Users can't change roles" });
     }
 
     try {
