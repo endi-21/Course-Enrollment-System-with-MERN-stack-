@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Course from "../models/course.model.js"
+import Enrollment from "../models/enrollment.model.js";
 
 const checkCourseFields = (course) => {
     return (!course.title || !course.description || !course.instructor_id || !course.video_url);
@@ -108,7 +109,7 @@ export const deleteCourse = async (req, res) => {
     }
 };
 
-export const getCoursesByInstructor = async (req, res) => {
+export const getCoursesByInstructorId = async (req, res) => {
     const { instructorId } = req.params;
 
     try {
@@ -122,5 +123,26 @@ export const getCoursesByInstructor = async (req, res) => {
     } catch (error) {
         console.error("Error fetching courses:", error.message);
         return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+export const getCoursesByStudentId = async (req, res) => {
+    const { studentId } = req.params;
+
+    try {
+        const enrollments = await Enrollment.find({ student_id: studentId });
+
+        if (enrollments.length === 0) {
+            return res.status(404).json({ success: false, message: "No courses found for this student" });
+        }
+
+        const courseIds = enrollments.map(enrollment => enrollment.course_id);
+
+        const courses = await Course.find({ _id: { $in: courseIds } });
+
+        res.status(200).json({ success: true, data: courses });
+    } catch (error) {
+        console.error("Error fetching courses:", error.message);
+        res.status(500).json({ success: false, message: "Server error" });
     }
 };
