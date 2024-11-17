@@ -107,3 +107,20 @@ export const deleteCourse = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
+
+export const getCoursesByInstructor = async (req, res) => {
+    const { instructorId } = req.params;
+
+    try {
+        const courses = await Course.find({ instructor_id: instructorId });
+
+        if (courses.length === 0) {
+            return res.status(404).json({ success: false, message: "No courses found for this instructor" });
+        }
+
+        return res.status(200).json({ success: true, data: courses });
+    } catch (error) {
+        console.error("Error fetching courses:", error.message);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
