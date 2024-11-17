@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwt.js';
+import Enrollment from '../models/enrollment.model.js';
 
 const checkUserFields = (user) => {
     return (!user.name || !user.email || !user.password || !user.role)
@@ -155,4 +156,25 @@ export const deleteUser = async (req, res) => {
 		console.log("Error in deleting user:", error.message);
 		res.status(500).json({ success: false, message: "Server error" });
 	}
+};
+
+export const getStudentsByCourseId = async (req, res) => {
+    const { courseId } = req.params;
+
+    try {
+        const enrollments = await Enrollment.find({ course_id: courseId });
+
+        if (enrollments.length === 0) {
+            return res.status(404).json({ success: false, message: "No students found for this course" });
+        }
+
+        const studentIds = enrollments.map(enrollment => enrollment.student_id);
+
+        const students = await User.find({ _id: { $in: studentIds } });
+
+        res.status(200).json({ success: true, data: students });
+    } catch (error) {
+        console.error("Error fetching courses:", error.message);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
 };
