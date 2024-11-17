@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
 			type: String, //url of a picture 
             default: null,
 		},
+        description: {
+            type: String, 
+            default: null,
+        },
 	},
 	{
 		timestamps: true, // creation and update time
