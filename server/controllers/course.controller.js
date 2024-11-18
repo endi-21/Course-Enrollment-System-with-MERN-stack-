@@ -146,3 +146,25 @@ export const getCoursesByStudentId = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
+export const getCoursesNotEnrolledByStudentId = async (req, res) => {
+    const { studentId } = req.params;
+
+    try {
+        
+        const enrollments = await Enrollment.find({ student_id: studentId });
+
+        const enrolledCourseIds = enrollments.map(enrollment => enrollment.course_id);
+
+        const courses = await Course.find({ _id: { $nin: enrolledCourseIds } });
+
+        if (courses.length === 0) {
+            return res.status(404).json({ success: false, message: "No unenrolled courses found" });
+        }
+
+        res.status(200).json({ success: true, data: courses });
+    } catch (error) {
+        console.error("Error fetching courses:", error.message);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
