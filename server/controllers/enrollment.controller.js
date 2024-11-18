@@ -1,9 +1,7 @@
 import mongoose from "mongoose";
 import Enrollment from "../models/enrollment.model.js";
-
-const checkEnrollmentFields = (enrollment) => {
-    return (!enrollment.student_id || !enrollment.course_id);
-}
+import User from "../models/user.model.js";
+import Course from "../models/course.model.js";
 
 export const getAllEnrollments = async (req, res) => {
     try {
@@ -35,20 +33,36 @@ export const getEnrollmentById = async (req, res)=> {
 };
 
 export const createEnrollment = async (req, res) => {
-    const enrollment = new Enrollment({
-        ...req.body,
-        start_date: new Date() // start_date is set to the moment the object is created
-    }); 
+    const {student_id, course_id} = req.body;
 
-    if((checkEnrollmentFields(enrollment))){
+    if(!student_id || !course_id){
         return res.status(400).json({success: false, message: "Please provide all fields"});
-    } 
+    }
 
     try {
+        const studentExists = await User.findById(student_id);
+        if(!studentExists){
+            return res.status(404).json({success: false, message: "Student not found"});
+        }
+
+        const courseExists = await Course.findById(course_id);
+        if(!courseExists){
+            return res.status(404).json({success: false, message: "Course not found"});
+        }
+
+        const enrollmentExists = await Enrollment.findOne({student_id, course_id});
+        if(enrollmentExists){
+            return res.status(409).json({success: false, message: "Enrollment already exists"})
+        }
+
+        const enrollment = new Enrollment({...req.body, start_date: new Date()})
+
         await enrollment.save();
         return res.status(201).json({success: true, data: enrollment})
+
     } catch (error) {
-        return res.status(500).json({success: false, message: "Server error"})
+        console.error("Error creating enrollment:", error.message);
+        return res.status(500).json({ success: false, message: "Server error" });
     }
 };
 
@@ -122,7 +136,7 @@ export const setEnrollmentEndDate = async (req, res) => {
 
         enrollment.end_date = new Date();
         await enrollment.save();
-        
+
         return res.status(200).json({ success: true, data: enrollment });
     } catch (error) {
         console.error("Error setting end_date:", error.message);
