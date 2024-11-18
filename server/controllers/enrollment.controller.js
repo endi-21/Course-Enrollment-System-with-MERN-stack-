@@ -90,3 +90,21 @@ export const deleteEnrollment = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
+
+export const getEnrollmentByStudentAndCourseId = async (req, res) => {
+    const { studentId, courseId } = req.params;
+
+    try {
+        
+        const enrollment = await Enrollment.findOne({ student_id: studentId, course_id: courseId });
+
+        if (!enrollment) {
+            return res.status(404).json({ success: false, message: "Enrollment not found" });
+        }
+
+        res.status(200).json({ success: true, data: enrollment });
+    } catch (error) {
+        console.error("Error fetching enrollment:", error.message);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
