@@ -104,3 +104,28 @@ export const getEnrollmentByStudentAndCourseId = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
+export const setEnrollmentEndDate = async (req, res) => {
+    const { id } = req.params; 
+
+    try {
+        
+        const enrollment = await Enrollment.findById(id);
+
+        if (!enrollment) {
+            return res.status(404).json({ success: false, message: "Enrollment not found" });
+        }
+
+        if (enrollment.end_date) {
+            return res.status(400).json({ success: false, message: "End date is already set" });
+        }
+
+        enrollment.end_date = new Date();
+        await enrollment.save();
+        
+        return res.status(200).json({ success: true, data: enrollment });
+    } catch (error) {
+        console.error("Error setting end_date:", error.message);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
