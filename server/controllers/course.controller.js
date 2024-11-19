@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Course from "../models/course.model.js"
 import Enrollment from "../models/enrollment.model.js";
+import User from "../models/user.model.js";
 
 const checkCourseFields = (course) => {
     return (!course.title || !course.description || !course.instructor_id || !course.video_url);
@@ -61,9 +62,14 @@ export const createCourse = async (req, res) => {
         return res.status(400).json({success: false, message: "Please provide all fields"});
     }
 
-    const newCourse = new Course(course); 
-
     try {
+        const instructor = await User.findById(course.instructor_id);
+        if(instructor.role !== "instructor"){
+            return res.status(400).json({success: false, message: "User is not an instructor"})
+        }
+
+        const newCourse = new Course(course); 
+
         await newCourse.save();
         return res.status(201).json({success: true, data: newCourse});
     } catch (error) {
@@ -84,6 +90,11 @@ export const updateCourse = async (req, res) => {
     }
     
     try {
+        const instructor = await User.findById(course.instructor_id);
+        if(instructor.role !== "instructor"){
+            return res.status(400).json({success: false, message: "User is not an instructor"})
+        }
+
         const updatedCourse = await Course.findByIdAndUpdate(id, course, {new: true}); 
         return res.status(200).json({success: true, data: updatedCourse});
     } catch (error) {
