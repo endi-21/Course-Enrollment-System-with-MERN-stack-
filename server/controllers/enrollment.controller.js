@@ -40,6 +40,12 @@ export const createEnrollment = async (req, res) => {
     }
 
     try {
+
+        const student = await User.findById(student_id);
+        if(student.role !== "student"){
+            return res.status(400).json({success: false, message: "User is not a student"})
+        }
+
         const studentExists = await User.findById(student_id);
         if(!studentExists){
             return res.status(404).json({success: false, message: "Student not found"});
@@ -75,10 +81,16 @@ export const updateEnrollment = async (req, res) => {
     }
     
     try {
+        const student = await User.findById(enrollment.student_id);
+        if(student.role !== "student"){
+            return res.status(400).json({success: false, message: "User is not a student"})
+        }
+
         const updatedEnrollment = await Enrollment.findByIdAndUpdate(id, enrollment, {new: true}); 
         return res.status(200).json({success: true, data: updatedEnrollment});
     } catch (error) {
-        res.status(200).json({ success: false, message: "Server error" });
+        console.error("Error creating enrollment:", error.message);
+        res.status(500).json({ success: false, message: "Server error" });
     }
 };
 
