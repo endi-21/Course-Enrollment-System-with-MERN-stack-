@@ -81,11 +81,7 @@ export const createUser = async (req, res) => {
 
     try {
         await newUser.save(); //mongoose function to save data to db 
-        const token = jwt.sign(
-            { id: newUser._id, role: newUser.role },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
-        );
+        const token = generateToken(newUser); 
         return res.status(201).json({ success: true, data: newUser, token });
     } catch (error) {
         console.log("Error:", error.message);
