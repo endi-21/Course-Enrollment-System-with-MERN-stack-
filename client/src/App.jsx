@@ -3,6 +3,7 @@ import { useAuthContext } from './hooks/useAuthContext.js';
 
 // pages & components
 import Login from './pages/Login';
+import Signup from './pages/Signup.jsx';
 import StudentDashboard from './pages/dashboards/StudentDashboard.jsx';
 import InstructorDashboard from './pages/dashboards/InstructorDashboard.jsx';
 import AdminDashboard from './pages/dashboards/AdminDashboard.jsx';
@@ -61,7 +62,11 @@ function App() {
 						/>
 						<Route
 							path="/login"
-							element={!user ? <Login /> : <Navigate to={dashboard} />}
+							element={!user ? <Login /> : <Navigate to="/"/>}
+						/>
+						<Route
+							path="/signup"
+							element={!user ? <Signup /> : <Navigate to="/" />}
 						/>
 					</Routes>
 				</div>
