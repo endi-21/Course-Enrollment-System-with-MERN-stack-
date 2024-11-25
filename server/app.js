@@ -4,11 +4,14 @@ import { connectDB } from "./config/database.js";
 import userRoutes from "./routes/user.route.js";
 import courseRoutes from "./routes/course.route.js";
 import enrollmentRoutes from "./routes/enrollment.route.js";
+import cors from "cors";
 
 
 dotenv.config(); 
 
 const app = express(); 
+
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 app.use(express.json());  //to get JSON data in req.body
 
