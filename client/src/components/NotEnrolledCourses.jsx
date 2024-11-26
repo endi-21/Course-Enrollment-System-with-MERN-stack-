@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import BasicCard from './UI/BasicCard';
+import CourseCard from './UI/CourseCard';
 
 const EnrolledCourses = () => {
     const [courses, setCourses] = useState([]);
@@ -48,7 +48,7 @@ const EnrolledCourses = () => {
           <h2>Not Enrolled Courses</h2>
           <div >
             {courses.map((course) => (
-              <BasicCard
+              <CourseCard
                 key={course._id}
                 title={course.title}
                 description={course.description}
