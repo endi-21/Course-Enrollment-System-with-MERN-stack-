@@ -7,7 +7,7 @@ const EnrolledCourses = () => {
 
     useEffect(() => {
         const fetchCourses = async () => {
-
+            
             const user = JSON.parse(localStorage.getItem('user'));
             if (!user || !user.data?.user?._id) {
                 setError('User information is missing or invalid');
@@ -15,14 +15,14 @@ const EnrolledCourses = () => {
             }
 
             try {
-                const response = await fetch(`http://localhost:5000/api/courses/student/${user.data.user._id}`, {
+                const response = await fetch(`http://localhost:5000/api/courses/student/not-enrolled/${user.data.user._id}`, {
                     headers: {
                         Authorization: `Bearer ${user.data.token}`,
                     },
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch enrolled courses');
+                    throw new Error('Failed to fetch not enrolled courses');
                 }
 
                 const result = await response.json();
@@ -40,13 +40,13 @@ const EnrolledCourses = () => {
     }
 
     if (!courses.length) {
-        return <div>No courses enrolled yet.</div>;
+        return <div>All courses enrolled.</div>;
     }
 
     return (
         <div>
-          <h2>Enrolled Courses</h2>
-          <div>
+          <h2>Not Enrolled Courses</h2>
+          <div >
             {courses.map((course) => (
               <BasicCard
                 key={course._id}
