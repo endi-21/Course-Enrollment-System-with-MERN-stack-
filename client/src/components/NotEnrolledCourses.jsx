@@ -7,7 +7,7 @@ const EnrolledCourses = () => {
 
     useEffect(() => {
         const fetchCourses = async () => {
-            
+
             const user = JSON.parse(localStorage.getItem('user'));
             if (!user || !user.data?.user?._id) {
                 setError('User information is missing or invalid');
@@ -15,6 +15,7 @@ const EnrolledCourses = () => {
             }
 
             try {
+                // get courses
                 const response = await fetch(`http://localhost:5000/api/courses/student/not-enrolled/${user.data.user._id}`, {
                     headers: {
                         Authorization: `Bearer ${user.data.token}`,
@@ -26,7 +27,26 @@ const EnrolledCourses = () => {
                 }
 
                 const result = await response.json();
-                setCourses(result.data); 
+
+                // get instructor names 
+                const coursesWithInstructors = await Promise.all(
+                    result.data.map(async (course) => {
+                        const instructorResponse = await fetch(`http://localhost:5000/api/users/${course.instructor_id}`, {
+                            headers: {
+                                Authorization: `Bearer ${user.data.token}`,
+                            },
+                        });
+
+                        if (!instructorResponse.ok) {
+                            throw new Error(`Failed to fetch instructor for course ${course.title}`);
+                        }
+
+                        const instructorData = await instructorResponse.json();
+                        return { ...course, instructorName: instructorData.data.name };
+                    })
+                );
+
+                setCourses(coursesWithInstructors);
             } catch (err) {
                 setError(err.message);
             }
@@ -35,28 +55,26 @@ const EnrolledCourses = () => {
         fetchCourses();
     }, []);
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
     if (!courses.length) {
-        return <div>All courses enrolled.</div>;
+        return <div>You have enrolled all the courses!</div>;
+    } else if (error) {
+        return <div>Error: {error}</div>;
     }
 
     return (
         <div>
-          <h2>Not Enrolled Courses</h2>
-          <div >
-            {courses.map((course) => (
-              <CourseCard
-                key={course._id}
-                title={course.title}
-                description={course.description}
-              />
-            ))}
-          </div>
+            <h2>Not Enrolled Courses</h2>
+            <div>
+                {courses.map((course) => (
+                    <CourseCard
+                        key={course._id}
+                        title={course.title}
+                        instructor={course.instructorName || 'Loading...'}
+                    />
+                ))}
+            </div>
         </div>
-      );
+    );
 };
 
 export default EnrolledCourses;
