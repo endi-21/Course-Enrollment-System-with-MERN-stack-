@@ -7,6 +7,10 @@ import Signup from './pages/Signup.jsx';
 import StudentDashboard from './pages/dashboards/StudentDashboard.jsx';
 import InstructorDashboard from './pages/dashboards/InstructorDashboard.jsx';
 import AdminDashboard from './pages/dashboards/AdminDashboard.jsx';
+import EnrolledCourses from './components/EnrolledCourses.jsx';
+import NotEnrolledCourses from './components/NotEnrolledCourses.jsx';
+import EditStudent from './components/EditStudent.jsx';
+import Search from './components/Search.jsx';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 
 function App() {
@@ -32,22 +36,38 @@ function App() {
 			<BrowserRouter>
 				<div className="pages">
 					<Routes>
+
 						<Route
 							path="/StudentDashboard"
 							element={
 								<RoleProtectedRoute role="student">
-									<StudentDashboard />
+									<StudentDashboard dashboard="StudentDashboard"/>
 								</RoleProtectedRoute>
 							}
-						/>
+						>
+							<Route
+								index
+								element={
+									<div>
+										<EnrolledCourses />
+										<NotEnrolledCourses />
+									</div>
+								}
+							/>
+							<Route path="edit" element={<EditStudent />} />
+							<Route path="search" element={<Search />} />
+						</Route>
+
+
 						<Route
 							path="/InstructorDashboard"
 							element={
 								<RoleProtectedRoute role="instructor">
-									<InstructorDashboard />
+									<InstructorDashboard dashboard="InstructorDashboard"/>
 								</RoleProtectedRoute>
 							}
 						/>
+
 						<Route
 							path="/AdminDashboard"
 							element={
@@ -56,13 +76,14 @@ function App() {
 								</RoleProtectedRoute>
 							}
 						/>
+
 						<Route
 							path="/"
 							element={user ? <Navigate to={dashboard} /> : <Navigate to="/login" />}
 						/>
 						<Route
 							path="/login"
-							element={!user ? <Login /> : <Navigate to="/"/>}
+							element={!user ? <Login /> : <Navigate to="/" />}
 						/>
 						<Route
 							path="/signup"
