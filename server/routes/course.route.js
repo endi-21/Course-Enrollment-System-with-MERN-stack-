@@ -8,12 +8,12 @@ router.get("/", getAllCourses);
 router.get("/:id", getCourseById);
 router.get("/search/:title", getCoursesByTitle);
 router.get("/instructor/:instructorId", getCoursesByInstructorId);
-router.get("/student/:studentId", getCoursesByStudentId);
-router.get("/student/not-enrolled/:studentId", getCoursesNotEnrolledByStudentId); 
 
 //protect middleware
 router.post("/", protect, createCourse);
 router.put("/:id", protect, updateCourse);
 router.delete("/:id", protect, deleteCourse); 
+router.get("/student/:studentId", protect, getCoursesByStudentId);
+router.get("/student/not-enrolled/:studentId", protect, getCoursesNotEnrolledByStudentId); 
 
 export default router; 
