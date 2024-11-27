@@ -1,29 +1,27 @@
 import * as React from 'react';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
+import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import CardActionArea from '@mui/material/CardActionArea';
 
-export default function BasicCard(props) {
+export default function CourseCard(props) {
 
-    const { title, description } = props
+    const { title, instructor } = props
 
     return (
-        <Card sx={{ minWidth: 275 }}>
-            <CardContent>
-                
-                <Typography variant="h5" component="div">
-                    {title}
-                </Typography>
-                
-                <Typography variant="body2">
-                    {description}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <Button size="small">Enroll</Button>
-            </CardActions>
+        <Card sx={{ maxWidth: 345 }}>
+            <CardActionArea>
+
+                <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                        {title}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        Instructor: {instructor}
+                    </Typography>
+                </CardContent>
+            </CardActionArea>
         </Card>
     );
 }
