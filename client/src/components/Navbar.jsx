@@ -1,19 +1,36 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ dashboard }) => {
-    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+    };
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    const profilePic = user?.data?.user?.profilePic || 'https://static.vecteezy.com/system/resources/previews/002/387/693/non_2x/user-profile-icon-free-vector.jpg';
+    console.log("fotoja:", profilePic);
 
     return (
-        <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '20px' }}>
-            <button onClick={() => navigate(`/${dashboard}/`)} style={{ margin: '0 10px' }}>
+        <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '20px' }} /*put to css later*/>
+            <Link to={`/${dashboard}/`} style={{ margin: '0 10px' }}>
                 Home
-            </button>
-            <button onClick={() => navigate(`/${dashboard}/edit`)} style={{ margin: '0 10px' }}>
+            </Link>
+            <Link to={`/${dashboard}/edit`} style={{ margin: '0 10px' }}>
                 Edit
-            </button>
-            <button onClick={() => navigate(`/${dashboard}/search`)} style={{ margin: '0 10px' }}>
+            </Link>
+            <Link to={`/${dashboard}/search`} style={{ margin: '0 10px' }}>
                 Search
+            </Link>
+
+            <img
+                src={profilePic}
+                alt="User Profile"
+                style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} /*put to css later*/
+            />
+            <button onClick={handleLogout}>
+                Log out
             </button>
         </nav>
     );

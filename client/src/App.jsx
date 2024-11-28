@@ -9,7 +9,7 @@ import InstructorDashboard from './pages/dashboards/InstructorDashboard.jsx';
 import AdminDashboard from './pages/dashboards/AdminDashboard.jsx';
 import EnrolledCourses from './components/EnrolledCourses.jsx';
 import NotEnrolledCourses from './components/NotEnrolledCourses.jsx';
-import EditStudent from './components/EditStudent.jsx';
+import EditUser from './components/EditUser.jsx';
 import Search from './components/Search.jsx';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 
@@ -54,7 +54,7 @@ function App() {
 									</div>
 								}
 							/>
-							<Route path="edit" element={<EditStudent />} />
+							<Route path="edit" element={<EditUser />} />
 							<Route path="search" element={<Search />} />
 						</Route>
 
