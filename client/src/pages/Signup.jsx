@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useSignup } from "../hooks/useSignup"
+import { useNavigate } from "react-router-dom"
 
 const Signup = () => {
 	const [name, setName] = useState('')
@@ -10,10 +11,13 @@ const Signup = () => {
 	const [pic, setPic] = useState('')
 	const { signup, error, isLoading } = useSignup()
 
+	const navigate = useNavigate()
+
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 
 		await signup(name, email, password, role, description, pic)
+		navigate('/'); 
 	}
 
 	return (
@@ -73,7 +77,7 @@ const Signup = () => {
 				value={pic}
 			/> <br />
 
-			<button disabled={isLoading}>Sign up</button>
+			<button type="submit" disabled={isLoading}>Sign up</button>
 			{error && <div className="error">{error}</div>}
 		</form>
 	)
