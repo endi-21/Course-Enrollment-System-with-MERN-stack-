@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import CourseCard from './UI/CourseCard';
+import axios from 'axios';
 
 const EnrolledCourses = () => {
     const [courses, setCourses] = useState([]);
@@ -15,47 +16,47 @@ const EnrolledCourses = () => {
 
             try {
                 // get courses
-                const response = await fetch(`http://localhost:5000/api/courses/student/${user.data.user._id}`, {
-                    headers: {
-                        Authorization: `Bearer ${user.data.token}`,
-                    },
-                });
+                const courseResponse = await axios.get(
+                    `http://localhost:5000/api/courses/student/${user.data.user._id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${user.data.token}`,
+                        },
+                    }
+                );
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch enrolled courses');
-                }
-
-                const result = await response.json();
+                const courseData = courseResponse.data.data;
 
                 // get instructor names 
-                const coursesWithInstructors = await Promise.all(
-                    result.data.map(async (course) => {
-                        const instructorResponse = await fetch(`http://localhost:5000/api/users/${course.instructor_id}`, {
-                            headers: {
-                                Authorization: `Bearer ${user.data.token}`,
-                            },
-                        });
+                const instructorNames = await Promise.all(
+                    courseData.map(async (course) => {
+                        const instructorResponse = await axios.get(
+                            `http://localhost:5000/api/users/${course.instructor_id}`,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${user.data.token}`,
+                                },
+                            }
+                        );
 
-                        if (!instructorResponse.ok) {
-                            throw new Error(`Failed to fetch instructor for course ${course.title}`);
-                        }
-
-                        const instructorData = await instructorResponse.json();
-                        return { ...course, instructorName: instructorData.data.name };
+                        return {
+                            ...course,
+                            instructorName: instructorResponse.data.data.name,
+                        };
                     })
                 );
 
-                setCourses(coursesWithInstructors);
+                setCourses(instructorNames);
             } catch (err) {
-                setError(err.message);
+                setError(err.response?.data?.error || err.message);
             }
         };
 
         fetchCourses();
     }, []);
 
-    if (!courses.length) {
-        return <div>You have not enrolled any courses yet.</div>;
+    if (!courses.length && !error) {
+        return <div>You have not enrolled in any courses yet.</div>;
     } else if (error) {
         return <div>Error: {error}</div>;
     }
