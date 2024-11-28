@@ -1,16 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useLogout } from '../hooks/useLogout';
 
 const Navbar = ({ dashboard }) => {
+    const { logout } = useLogout();
 
     const handleLogout = () => {
-        localStorage.removeItem('user');
+        logout(); 
         window.location.href = '/login';
     };
 
     const user = JSON.parse(localStorage.getItem('user'));
     const profilePic = user?.data?.user?.profilePic || 'https://static.vecteezy.com/system/resources/previews/002/387/693/non_2x/user-profile-icon-free-vector.jpg';
-    console.log("fotoja:", profilePic);
 
     return (
         <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '20px' }} /*put to css later*/>
