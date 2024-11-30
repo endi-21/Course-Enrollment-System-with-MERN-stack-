@@ -7,12 +7,12 @@ const AddNewCourse = () => {
         title: '',
         description: '',
         video_url: '',
-        instructor_id: '', // Leave empty for admins to fill
+        instructor_id: '', 
     });
 
     const user = JSON.parse(localStorage.getItem('user'));
-    const role = user?.data?.user?.role; // Retrieve role from localStorage
-    const instructorId = role === 'instructor' ? user?.data?.user?._id : ''; // Set default ID for instructors
+    const role = user?.data?.user?.role; 
+    const instructorId = role === 'instructor' ? user?.data?.user?._id : ''; 
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -28,7 +28,7 @@ const AddNewCourse = () => {
 
         const payload = {
             ...formData,
-            instructor_id: role === 'instructor' ? instructorId : formData.instructor_id, // Use default ID for instructors
+            instructor_id: role === 'instructor' ? instructorId : formData.instructor_id, 
         };
 
         try {

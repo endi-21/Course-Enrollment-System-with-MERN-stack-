@@ -1,19 +1,19 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const AddNewCourseBtn = () => {
+const AddNewUserBtn = () => {
 
     const navigate = useNavigate();
 
     const handleAddNewCourse = () => {
-        navigate('/add-new-course');
+        navigate('/add-new-user');
     };
 
     return (
         <div>
-            <button onClick={handleAddNewCourse}>Add New Course</button>
+            <button onClick={handleAddNewCourse}>Add New User</button>
         </div>
     )
 }
 
-export default AddNewCourseBtn
+export default AddNewUserBtn
