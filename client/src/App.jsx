@@ -16,6 +16,7 @@ import CourseDetails from './pages/CourseDetails.jsx';
 import InstructorCourses from './components/InstructorCourses.jsx';
 import EditCourse from './pages/EditCourse.jsx';
 import UserProfile from './components/UserProfile.jsx';
+import AddNewCourse from './pages/AddNewCourse.jsx';
 
 function App() {
 	const { user } = useAuthContext();
@@ -46,6 +47,8 @@ function App() {
 						<Route path='/edit-course' element={<EditCourse />} />
 
 						<Route path='/edit-user' element={<EditUser />} />
+
+						<Route path='/add-new-course' element={<AddNewCourse />} />
 
 						<Route
 							path="/StudentDashboard"
