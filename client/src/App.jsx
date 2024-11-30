@@ -17,6 +17,7 @@ import InstructorCourses from './components/InstructorCourses.jsx';
 import EditCourse from './pages/EditCourse.jsx';
 import UserProfile from './components/UserProfile.jsx';
 import AddNewCourse from './pages/AddNewCourse.jsx';
+import AddNewCourseBtn from './components/AddNewCourseBtn.jsx'
 
 function App() {
 	const { user } = useAuthContext();
@@ -84,6 +85,7 @@ function App() {
 								index
 								element={
 									<div>
+										<AddNewCourseBtn />
 										<InstructorCourses />
 									</div>
 								}
@@ -100,7 +102,16 @@ function App() {
 									<AdminDashboard />
 								</RoleProtectedRoute>
 							}
-						/>
+						> 
+						
+						<Route
+								index element={
+									<div>
+										<AddNewCourseBtn />
+									</div>
+								}
+							/>
+						</Route>
 
 						<Route
 							path="/"
