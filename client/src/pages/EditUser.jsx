@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLogout } from '../hooks/useLogout';
-import { useNavigate } from 'react-router-dom';
 
 const EditUser = () => {
+	const location = useLocation();
 	const navigate = useNavigate();
 	const { logout } = useLogout();
-	const location = useLocation();
 	const { userId } = location.state || {};
 	const [formData, setFormData] = useState({
 		name: '',
@@ -17,28 +16,15 @@ const EditUser = () => {
 		password: '',
 	});
 
-	const handleDeleteUser = async () => {
-		try {
-			await axios.delete(`http://localhost:5000/api/users/${userId}`, {
-				headers: {
-					Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
-				},
-			});
-
-			logout();
-
-			navigate('/login');
-			alert('User deleted successfully!');
-		} catch (error) {
-			console.error('Error deleting user:', error);
-			alert('Failed to delete user. Please try again.');
-		}
-	};
-
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const response = await axios.get(`http://localhost:5000/api/users/${userId}`);
+				const response = await axios.get(`http://localhost:5000/api/users/${userId}`, {
+					headers: {
+						Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
+					},
+				});
+
 				if (response.data.success) {
 					const { name, email, profilePic, description } = response.data.data;
 					setFormData({
@@ -46,7 +32,7 @@ const EditUser = () => {
 						email,
 						profilePic,
 						description: description || '',
-						password: '',
+						password: '', 
 					});
 				}
 			} catch (error) {
@@ -75,27 +61,44 @@ const EditUser = () => {
 				},
 			});
 
-			localStorage.removeItem('user');
-
-			const loginResponse = await axios.post('http://localhost:5000/api/users/login', {
-				email: formData.email,
-				password: formData.password,
-			});
-
-			if (loginResponse.data.success) {
-				localStorage.setItem('user', JSON.stringify(loginResponse.data));
-				alert('User updated successfully!');
-			}
+			alert('User updated successfully!');
+			navigate('/'); 
 		} catch (error) {
 			console.error('Error updating user:', error);
+			alert('Failed to update user. Please try again.');
 		}
 	};
+
+	const handleDeleteUser = async () => {
+		try {
+			await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+				headers: {
+					Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
+				},
+			});
+	
+			alert('User deleted successfully!');
+	
+			const currentUser = JSON.parse(localStorage.getItem('user'));
+			if (currentUser?.data?.user?.role !== 'admin') {
+				logout(); 
+			}
+	
+			navigate('/'); 
+		} catch (error) {
+			console.error('Error deleting user:', error);
+			alert('Failed to delete user. Please try again.');
+		}
+	};
+	
 
 	return (
 		<div>
 			<h2>Edit User</h2>
-			<form onSubmit={handleSubmit}>
 
+			<p>ID: {userId}</p>
+
+			<form onSubmit={handleSubmit}>
 				<label>
 					Name:
 					<input
@@ -106,7 +109,6 @@ const EditUser = () => {
 						required
 					/>
 				</label> <br />
-
 				<label>
 					Email:
 					<input
@@ -117,7 +119,6 @@ const EditUser = () => {
 						required
 					/>
 				</label> <br />
-
 				<label>
 					Profile Picture URL:
 					<input
@@ -127,7 +128,6 @@ const EditUser = () => {
 						onChange={handleChange}
 					/>
 				</label> <br />
-
 				<label>
 					Description:
 					<textarea
@@ -136,7 +136,6 @@ const EditUser = () => {
 						onChange={handleChange}
 					/>
 				</label> <br />
-
 				<label>
 					Password:
 					<input
@@ -147,9 +146,7 @@ const EditUser = () => {
 						required
 					/>
 				</label> <br /> <br />
-
 				<button type="submit">Update User</button>
-
 			</form>
 			<button onClick={handleDeleteUser}>Delete User</button>
 		</div>

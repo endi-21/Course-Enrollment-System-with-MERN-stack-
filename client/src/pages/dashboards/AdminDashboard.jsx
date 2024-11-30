@@ -6,7 +6,7 @@ const AdminDashboard = ({ dashboard }) => {
 
 	return (
 		<div>
-			<h1>Instructor Dashboard</h1>
+			<h1>Admin Dashboard</h1>
 			<AdminNavbar dashboard={dashboard}/>
 
 

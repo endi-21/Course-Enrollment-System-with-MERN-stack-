@@ -50,7 +50,7 @@ const GetAllCourses = () => {
     }, []);
 
     if (!courses.length) {
-        return <div>You have not enrolled any courses yet!</div>;
+        return <div>There are no courses</div>;
     } else if (error) {
         return <div>Error: {error}</div>;
     }
