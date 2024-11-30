@@ -17,69 +17,82 @@ const Signup = () => {
 		e.preventDefault()
 
 		await signup(name, email, password, role, description, pic)
-		navigate('/'); 
+		navigate('/login');
 	}
 
+	const navigateToLogin = () => {
+		navigate('/login'); 
+	};
+
 	return (
-		<form className="signup" onSubmit={handleSubmit}>
-			<h3>Sign Up</h3>
+		<div>
+			<form className="signup" onSubmit={handleSubmit}>
+				<h3>Sign Up</h3>
 
-			<label>Name:</label>
-			<input
-				type="text"
-				onChange={(e) => setName(e.target.value)}
-				value={name}
-			/> <br />
-			<label>Email:</label>
-			<input
-				type="email"
-				onChange={(e) => setEmail(e.target.value)}
-				value={email}
-			/> <br />
+				<label>Name:</label>
+				<input
+					type="text"
+					onChange={(e) => setName(e.target.value)}
+					value={name}
+				/> <br />
+				<label>Email:</label>
+				<input
+					type="email"
+					onChange={(e) => setEmail(e.target.value)}
+					value={email}
+				/> <br />
 
-			<label>Password:</label>
-			<input
-				type="password"
-				onChange={(e) => setPassword(e.target.value)}
-				value={password}
-			/> <br />
+				<label>Password:</label>
+				<input
+					type="password"
+					onChange={(e) => setPassword(e.target.value)}
+					value={password}
+				/> <br />
 
-			<label>Role:</label>
-			<input
-				type="radio"
-				onChange={(e) => setRole(e.target.value)}
-				value="student"
-				name="role"
-				checked={role === "student"}
-			/>
-			Student
-			<input
-				type="radio"
-				onChange={(e) => setRole(e.target.value)}
-				value="instructor"
-				name="role"
-				checked={role === "instructor"}
-			/>
-			Instructor
-			<br />
+				<label>Role:</label>
+				<input
+					type="radio"
+					onChange={(e) => setRole(e.target.value)}
+					value="student"
+					name="role"
+					checked={role === "student"}
+				/>
+				Student
+				<input
+					type="radio"
+					onChange={(e) => setRole(e.target.value)}
+					value="instructor"
+					name="role"
+					checked={role === "instructor"}
+				/>
+				Instructor
+				<br />
 
-			<label>Description:</label>
-			<input
-				type="text"
-				onChange={(e) => setDescription(e.target.value)}
-				value={description}
-			/> <br />
+				<label>Description:</label>
+				<input
+					type="text"
+					onChange={(e) => setDescription(e.target.value)}
+					value={description}
+				/> <br />
 
-			<label>Profile Picture URL:</label>
-			<input
-				type="text"
-				onChange={(e) => setPic(e.target.value)}
-				value={pic}
-			/> <br />
+				<label>Profile Picture URL:</label>
+				<input
+					type="text"
+					onChange={(e) => setPic(e.target.value)}
+					value={pic}
+				/> <br />
 
-			<button type="submit" disabled={isLoading}>Sign up</button>
-			{error && <div className="error">{error}</div>}
-		</form>
+				<button type="submit" disabled={isLoading}>Sign up</button>
+				{error && <div className="error">{error}</div>}
+			</form>
+
+			<div >
+				<button onClick={navigateToLogin} >
+					Log in
+				</button>
+			</div>
+		</div>
+
 	)
 }
 
