@@ -55,8 +55,8 @@ const EnrolledCourses = () => {
         fetchCourses();
     }, []);
 
-    if (!courses.length && !error) {
-        return <div>You have not enrolled in any courses yet.</div>;
+    if (!courses.length) {
+        return <div>You have not enrolled any courses yet!</div>;
     } else if (error) {
         return <div>Error: {error}</div>;
     }

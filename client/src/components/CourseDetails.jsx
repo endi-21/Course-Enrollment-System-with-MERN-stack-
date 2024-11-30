@@ -74,7 +74,7 @@ const CourseDetails = () => {
         }
     };
 
-    const handleFinishCourse = async () => {
+    const handleMarkAsFinished = async () => {
         try {
             const response = await axios.put(
                 `http://localhost:5000/api/enrollments/${enrollmentId}/end-date`,
@@ -122,8 +122,8 @@ const CourseDetails = () => {
                 {isEnrolled ? (
                     <div>
                         <button onClick={handleUnenroll}>Unenroll</button>
-                        <button onClick={handleFinishCourse} disabled={!!endDate}>
-                            Finish Course
+                        <button onClick={handleMarkAsFinished} disabled={!!endDate}>
+                            Mark as finished
                         </button>
                     </div>
                 ) : (
