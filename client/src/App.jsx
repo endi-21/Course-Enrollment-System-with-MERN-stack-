@@ -21,6 +21,7 @@ import AddNewCourseBtn from './components/AddNewCourseBtn.jsx'
 import AddNewUserBtn from './components/AddNewUserBtn.jsx';
 import AddNewUser from './pages/AddNewUser.jsx';
 import GetAllCourses from './components/GetAllCourses.jsx';
+import GetAllUsers from './components/GetAllUsers.jsx';
 
 function App() {
 	const { user } = useAuthContext();
@@ -104,20 +105,28 @@ function App() {
 							path="/AdminDashboard"
 							element={
 								<RoleProtectedRoute role="admin">
-									<AdminDashboard dashboard="AdminDashboard"/>
+									<AdminDashboard dashboard="AdminDashboard" />
 								</RoleProtectedRoute>
 							}
-						> 
-						
-						<Route
+						>
+
+							<Route
 								index element={
 									<div>
 										<AddNewCourseBtn />
-										<AddNewUserBtn/>
+										<AddNewUserBtn />
 									</div>
 								}
 							/>
-							<Route path="get-all" element={<GetAllCourses />} />
+							<Route path="get-all" element={
+								<div>
+									<GetAllCourses />
+									<GetAllUsers />
+								</div>
+
+							} />
+
+
 						</Route>
 
 						<Route
