@@ -13,6 +13,7 @@ import EditUser from './components/EditUser.jsx';
 import Search from './components/Search.jsx';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 import CourseDetails from './components/CourseDetails.jsx';
+import InstructorCourses from './components/InstructorCourses.jsx';
 
 function App() {
 	const { user } = useAuthContext();
@@ -69,7 +70,19 @@ function App() {
 									<InstructorDashboard dashboard="InstructorDashboard" />
 								</RoleProtectedRoute>
 							}
-						/>
+						>
+							<Route
+								index
+								element={
+									<div>
+										<InstructorCourses />
+									</div>
+								}
+							/>
+							<Route path="edit" element={<EditUser />} />
+							<Route path="search" element={<Search />} />
+						</Route>
+
 
 						<Route
 							path="/AdminDashboard"
