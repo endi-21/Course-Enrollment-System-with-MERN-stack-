@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useLogout } from '../hooks/useLogout';
+import { useNavigate } from 'react-router-dom';
 
 const EditUser = () => {
+	const navigate = useNavigate();
+	const { logout } = useLogout();
 	const location = useLocation();
-	const { userId } = location.state || {}; 
+	const { userId } = location.state || {};
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
@@ -12,6 +16,24 @@ const EditUser = () => {
 		description: '',
 		password: '',
 	});
+
+	const handleDeleteUser = async () => {
+		try {
+			await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+				headers: {
+					Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
+				},
+			});
+	
+			logout();
+	
+			navigate('/login');
+			alert('User deleted successfully!');
+		} catch (error) {
+			console.error('Error deleting user:', error);
+			alert('Failed to delete user. Please try again.');
+		}
+	};
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -24,7 +46,7 @@ const EditUser = () => {
 						email,
 						profilePic,
 						description: description || '',
-						password: '', 
+						password: '',
 					});
 				}
 			} catch (error) {
@@ -70,63 +92,68 @@ const EditUser = () => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<h2>Edit User</h2>
+		<div>
+			<form onSubmit={handleSubmit}>
+				<h2>Edit User</h2>
 
-			<label>
-				Name:
-				<input
-					type="text"
-					name="name"
-					value={formData.name}
-					onChange={handleChange}
-					required
-				/>
-			</label> <br />
+				<label>
+					Name:
+					<input
+						type="text"
+						name="name"
+						value={formData.name}
+						onChange={handleChange}
+						required
+					/>
+				</label> <br />
 
-			<label>
-				Email:
-				<input
-					type="email"
-					name="email"
-					value={formData.email}
-					onChange={handleChange}
-					required
-				/>
-			</label> <br />
+				<label>
+					Email:
+					<input
+						type="email"
+						name="email"
+						value={formData.email}
+						onChange={handleChange}
+						required
+					/>
+				</label> <br />
 
-			<label>
-				Profile Picture URL:
-				<input
-					type="url"
-					name="profilePic"
-					value={formData.profilePic}
-					onChange={handleChange}
-				/>
-			</label> <br />
+				<label>
+					Profile Picture URL:
+					<input
+						type="url"
+						name="profilePic"
+						value={formData.profilePic}
+						onChange={handleChange}
+					/>
+				</label> <br />
 
-			<label>
-				Description:
-				<textarea
-					name="description"
-					value={formData.description}
-					onChange={handleChange}
-				/>
-			</label> <br />
+				<label>
+					Description:
+					<textarea
+						name="description"
+						value={formData.description}
+						onChange={handleChange}
+					/>
+				</label> <br />
 
-			<label>
-				Password:
-				<input
-					type="password"
-					name="password"
-					value={formData.password}
-					onChange={handleChange}
-					required
-				/>
-			</label> <br /> <br />
+				<label>
+					Password:
+					<input
+						type="password"
+						name="password"
+						value={formData.password}
+						onChange={handleChange}
+						required
+					/>
+				</label> <br /> <br />
 
-			<button type="submit">Update User</button>
-		</form>
+				<button type="submit">Update User</button>
+
+			</form>
+			<button onClick={handleDeleteUser}>Delete User</button>
+		</div>
+
 	);
 };
 
