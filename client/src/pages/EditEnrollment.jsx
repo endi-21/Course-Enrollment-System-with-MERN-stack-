@@ -58,7 +58,7 @@ const EditEnrollment = () => {
             });
 
             alert('Enrollment updated successfully!');
-            navigate('/all-enrollments');
+            navigate('/');
         } catch (error) {
             console.error('Error updating enrollment:', error);
             alert('Failed to update enrollment. Please try again.');
