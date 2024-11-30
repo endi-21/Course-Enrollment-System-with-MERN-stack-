@@ -9,7 +9,7 @@ import InstructorDashboard from './pages/dashboards/InstructorDashboard.jsx';
 import AdminDashboard from './pages/dashboards/AdminDashboard.jsx';
 import EnrolledCourses from './components/EnrolledCourses.jsx';
 import NotEnrolledCourses from './components/NotEnrolledCourses.jsx';
-import EditUser from './components/EditUser.jsx';
+import EditUser from './pages/EditUser.jsx';
 import Search from './components/Search.jsx';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 import CourseDetails from './pages/CourseDetails.jsx';
