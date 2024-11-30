@@ -67,9 +67,8 @@ const EnrolledCourses = () => {
             <div>
                 {courses.map((course) => (
                     <CourseCard
-                        key={course._id}
-                        title={course.title}
-                        instructor={course.instructorName || 'Loading...'}
+                        key={course._id}                       
+                        courseData={course}
                     />
                 ))}
             </div>
