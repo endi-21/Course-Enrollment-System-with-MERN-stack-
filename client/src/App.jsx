@@ -12,8 +12,9 @@ import NotEnrolledCourses from './components/NotEnrolledCourses.jsx';
 import EditUser from './components/EditUser.jsx';
 import Search from './components/Search.jsx';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
-import CourseDetails from './components/CourseDetails.jsx';
+import CourseDetails from './pages/CourseDetails.jsx';
 import InstructorCourses from './components/InstructorCourses.jsx';
+import EditCourse from './pages/EditCourse.jsx';
 
 function App() {
 	const { user } = useAuthContext();
@@ -40,6 +41,8 @@ function App() {
 					<Routes>
 
 						<Route path="/course-details" element={<CourseDetails />} />
+
+						<Route path='/edit-course' element={<EditCourse/>}/>
 
 						<Route
 							path="/StudentDashboard"

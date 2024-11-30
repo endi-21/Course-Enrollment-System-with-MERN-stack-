@@ -36,7 +36,7 @@ const InstructorCourses = () => {
 
     return (
         <div>
-            <h2>Enrolled Courses</h2>
+            <h2>My Courses</h2>
             <div>
                 {courses.map((course) => (
                     <CourseCard

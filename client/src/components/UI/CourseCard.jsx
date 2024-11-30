@@ -6,12 +6,21 @@ import CardActionArea from '@mui/material/CardActionArea';
 import { useNavigate } from 'react-router-dom';
 
 export default function CourseCard(props) {
-    const { courseData } = props; // Pass the full course object
+    const { courseData } = props;
     const navigate = useNavigate();
 
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user?.data?.user?._id;
+    const userRole = user?.data?.user?.role;
+
     const handleCardClick = () => {
-        navigate('/course-details', { state: { course: courseData } });
+        if (userId === courseData.instructor_id || userRole === 'admin') {
+            navigate('/edit-course', { state: { course: courseData } });
+        } else {
+            navigate('/course-details', { state: { course: courseData } });
+        }
     };
+
 
     return (
         <Card sx={{ maxWidth: 345 }} onClick={handleCardClick}>
@@ -20,9 +29,11 @@ export default function CourseCard(props) {
                     <Typography gutterBottom variant="h5" component="div">
                         {courseData.title}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        Instructor: {courseData.instructorName}
-                    </Typography>
+                    {userId !== courseData.instructor_id && (
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                            Instructor: {courseData.instructorName}
+                        </Typography>
+                    )}
                 </CardContent>
             </CardActionArea>
         </Card>
