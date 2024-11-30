@@ -20,6 +20,7 @@ import AddNewCourse from './pages/AddNewCourse.jsx';
 import AddNewCourseBtn from './components/AddNewCourseBtn.jsx'
 import AddNewUserBtn from './components/AddNewUserBtn.jsx';
 import AddNewUser from './pages/AddNewUser.jsx';
+import GetAllCourses from './components/GetAllCourses.jsx';
 
 function App() {
 	const { user } = useAuthContext();
@@ -116,6 +117,7 @@ function App() {
 									</div>
 								}
 							/>
+							<Route path="get-all" element={<GetAllCourses />} />
 						</Route>
 
 						<Route
