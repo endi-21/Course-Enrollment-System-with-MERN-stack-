@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const EditCourse = () => {
+	const navigate = useNavigate();
     const location = useLocation();
     const { course } = location.state || {};
     const [formData, setFormData] = useState({
@@ -12,6 +14,22 @@ const EditCourse = () => {
     });
 
     const user = JSON.parse(localStorage.getItem('user'));
+
+    const handleDeleteCourse = async () => {
+		try {
+			await axios.delete(`http://localhost:5000/api/courses/${course._id}`, {
+				headers: {
+					Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
+				},
+			});
+
+			navigate('/');
+			alert('Course deleted successfully!');
+		} catch (error) {
+			console.error('Error deleting course:', error);
+			alert('Failed to delete course. Please try again.');
+		}
+	};
 
     useEffect(() => {
         if (!course) return;
@@ -106,6 +124,9 @@ const EditCourse = () => {
 
                 <button type="submit">Update Course</button>
             </form>
+
+			<button onClick={handleDeleteCourse}>Delete Course</button>
+
         </div>
     );
 };

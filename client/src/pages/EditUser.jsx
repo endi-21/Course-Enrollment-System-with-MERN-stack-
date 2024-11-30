@@ -24,9 +24,9 @@ const EditUser = () => {
 					Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
 				},
 			});
-	
+
 			logout();
-	
+
 			navigate('/login');
 			alert('User deleted successfully!');
 		} catch (error) {
@@ -93,8 +93,8 @@ const EditUser = () => {
 
 	return (
 		<div>
+			<h2>Edit User</h2>
 			<form onSubmit={handleSubmit}>
-				<h2>Edit User</h2>
 
 				<label>
 					Name:
