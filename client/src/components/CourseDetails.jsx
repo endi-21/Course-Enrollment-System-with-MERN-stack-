@@ -8,8 +8,8 @@ const CourseDetails = () => {
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [enrollmentId, setEnrollmentId] = useState(null);
     const user = JSON.parse(localStorage.getItem('user'));
-    const studentId = user?.data?.user?._id || null; 
-
+    const studentId = user?.data?.user?._id || null;
+    const [endDate, setEndDate] = useState(null);
 
     useEffect(() => {
         if (!course) return;
@@ -19,7 +19,8 @@ const CourseDetails = () => {
                 const response = await axios.get(`http://localhost:5000/api/enrollments/${studentId}/${course._id}`);
                 if (response.data.success) {
                     setIsEnrolled(true);
-                    setEnrollmentId(response.data.data._id); 
+                    setEnrollmentId(response.data.data._id);
+                    setEndDate(response.data.data.end_date);
                 } else {
                     setIsEnrolled(false);
                 }
@@ -53,7 +54,7 @@ const CourseDetails = () => {
             console.error('Error enrolling:', error);
         }
     };
-    
+
 
     const handleUnenroll = async () => {
         try {
@@ -66,14 +67,34 @@ const CourseDetails = () => {
             if (response.data.success) {
                 setIsEnrolled(false);
                 setEnrollmentId(null);
+                setEndDate(null);
             }
         } catch (error) {
             console.error('Error unenrolling:', error);
         }
     };
 
+    const handleFinishCourse = async () => {
+        try {
+            const response = await axios.put(
+                `http://localhost:5000/api/enrollments/${enrollmentId}/end-date`,
+                {}, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.data.token}`,
+                    },
+                }
+            );
+            if (response.data.success) {
+                setEndDate(true);
+            }
+        } catch (error) {
+            console.error('Error finishing course:', error);
+        }
+    };
+
     if (!course) {
-        return <p>No course data available.</p>; 
+        return <p>No course data available.</p>;
     }
 
     return (
@@ -99,7 +120,12 @@ const CourseDetails = () => {
 
             <div>
                 {isEnrolled ? (
-                    <button onClick={handleUnenroll}>Unenroll</button>
+                    <div>
+                        <button onClick={handleUnenroll}>Unenroll</button>
+                        <button onClick={handleFinishCourse} disabled={!!endDate}>
+                            Finish Course
+                        </button>
+                    </div>
                 ) : (
                     <button onClick={handleEnroll}>Enroll</button>
                 )}
