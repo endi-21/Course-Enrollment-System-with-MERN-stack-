@@ -15,6 +15,7 @@ import RoleProtectedRoute from './components/RoleProtectedRoute';
 import CourseDetails from './pages/CourseDetails.jsx';
 import InstructorCourses from './components/InstructorCourses.jsx';
 import EditCourse from './pages/EditCourse.jsx';
+import UserProfile from './components/UserProfile.jsx';
 
 function App() {
 	const { user } = useAuthContext();
@@ -42,7 +43,9 @@ function App() {
 
 						<Route path="/course-details" element={<CourseDetails />} />
 
-						<Route path='/edit-course' element={<EditCourse/>}/>
+						<Route path='/edit-course' element={<EditCourse />} />
+
+						<Route path='/edit-user' element={<EditUser />} />
 
 						<Route
 							path="/StudentDashboard"
@@ -61,7 +64,7 @@ function App() {
 									</div>
 								}
 							/>
-							<Route path="edit" element={<EditUser />} />
+							<Route path="profile" element={<UserProfile />} />
 							<Route path="search" element={<Search />} />
 						</Route>
 
@@ -82,7 +85,7 @@ function App() {
 									</div>
 								}
 							/>
-							<Route path="edit" element={<EditUser />} />
+							<Route path="profile" element={<UserProfile />} />
 							<Route path="search" element={<Search />} />
 						</Route>
 

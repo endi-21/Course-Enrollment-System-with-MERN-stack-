@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const EditCourse = () => {
@@ -12,12 +12,10 @@ const EditCourse = () => {
     });
 
     const user = JSON.parse(localStorage.getItem('user'));
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (!course) return;
 
-        // Pre-fill form with course details
         setFormData({
             title: course.title || '',
             description: course.description || '',

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const EditUser = () => {
-	const userId = JSON.parse(localStorage.getItem('user'))?.data?.user?._id;
-	const userRole = JSON.parse(localStorage.getItem('user'))?.data?.user?.role;
+	const location = useLocation();
+	const { userId } = location.state || {}; 
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
@@ -18,13 +19,13 @@ const EditUser = () => {
 				const response = await axios.get(`http://localhost:5000/api/users/${userId}`);
 				if (response.data.success) {
 					const { name, email, profilePic, description } = response.data.data;
-					setFormData((prev) => ({
-						...prev,
+					setFormData({
 						name,
 						email,
 						profilePic,
-						description: description || '', 
-					}));
+						description: description || '',
+						password: '', 
+					});
 				}
 			} catch (error) {
 				console.error('Error fetching user data:', error);
@@ -44,6 +45,7 @@ const EditUser = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
 		try {
 			await axios.put(`http://localhost:5000/api/users/${userId}`, formData, {
 				headers: {
@@ -70,9 +72,6 @@ const EditUser = () => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<h2>Edit User</h2>
-
-			<p>ID: {userId}</p>
-			<p>Role: {userRole}</p>
 
 			<label>
 				Name:

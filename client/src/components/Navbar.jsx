@@ -19,8 +19,8 @@ const Navbar = ({ dashboard }) => {
             <Link to={`/${dashboard}/`} style={{ margin: '0 10px' }}>
                 Home
             </Link>
-            <Link to={`/${dashboard}/edit`} style={{ margin: '0 10px' }}>
-                Edit
+            <Link to={`/${dashboard}/profile`} style={{ margin: '0 10px' }}>
+                Profile
             </Link>
             <Link to={`/${dashboard}/search`} style={{ margin: '0 10px' }}>
                 Search
