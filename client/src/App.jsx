@@ -22,6 +22,8 @@ import AddNewUserBtn from './components/AddNewUserBtn.jsx';
 import AddNewUser from './pages/AddNewUser.jsx';
 import GetAllCourses from './components/GetAllCourses.jsx';
 import GetAllUsers from './components/GetAllUsers.jsx';
+import GetAllEnrollments from './components/GetAllEnrollments.jsx';
+import EditEnrollment from './pages/EditEnrollment.jsx';
 
 function App() {
 	const { user } = useAuthContext();
@@ -52,6 +54,8 @@ function App() {
 						<Route path='/edit-course' element={<EditCourse />} />
 
 						<Route path='/edit-user' element={<EditUser />} />
+
+						<Route path='/edit-enrollment' element={<EditEnrollment />} />
 
 						<Route path='/add-new-course' element={<AddNewCourse />} />
 
@@ -122,6 +126,7 @@ function App() {
 								<div>
 									<GetAllCourses />
 									<GetAllUsers />
+									<GetAllEnrollments/>
 								</div>
 
 							} />
