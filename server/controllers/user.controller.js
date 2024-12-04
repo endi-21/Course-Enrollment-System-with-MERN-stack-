@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import User from "../models/user.model.js";
-import jwt from "jsonwebtoken";
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwt.js';
 import Enrollment from '../models/enrollment.model.js';
+import Course from '../models/course.model.js';
 
 const checkUserFields = (user) => {
     return (!user.name || !user.email || !user.password || !user.role)
@@ -143,10 +143,21 @@ export const deleteUser = async (req, res) => {
 	}
 
 	try {
-		const deletedUser = await User.findByIdAndDelete(id);
-        if (!deletedUser) {
+		
+        const user = await User.findById(id);
+        if(!user){
             return res.status(404).json({ success: false, message: "User not found" });
         }
+
+        if(user.role === "instructor"){
+            const courses = await Course.find({instructor_id: id})
+            const courseIds = courses.map((course)=> course._id)
+            await Enrollment.deleteMany({course_id: {$in: courseIds}})
+            
+            await Course.deleteMany({instructor_id: id})
+        }
+
+        await User.findByIdAndDelete(id);
 		res.status(200).json({ success: true, message: "User deleted" });
 	} catch (error) {
 		console.log("Error in deleting user:", error.message);
