@@ -23,10 +23,17 @@ export const useSignup = () => {
                 pic,
             });
 
-            localStorage.setItem('user', JSON.stringify(response.data));
+            const standardizedData = {
+                success: response.data.success,
+                data: {
+                    user: response.data.data,
+                    token: response.data.token,
+                },
+            };
 
-            // Update the auth context
-            dispatch({ type: 'LOGIN', payload: response.data });
+            localStorage.setItem('user', JSON.stringify(standardizedData));
+
+            dispatch({ type: 'LOGIN', payload: standardizedData });
 
             setIsLoading(false);
         } catch (err) {
@@ -34,6 +41,7 @@ export const useSignup = () => {
             setError(err.response?.data?.error || 'An unexpected error occurred');
         }
     };
+
 
     return { signup, isLoading, error };
 };
