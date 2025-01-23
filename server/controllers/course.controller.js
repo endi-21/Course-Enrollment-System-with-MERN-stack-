@@ -111,6 +111,7 @@ export const deleteCourse = async (req, res) => {
 
     try {
         const deletedCourse = await Course.findByIdAndDelete(id);
+        await Enrollment.deleteMany({course: id})
         if (!deletedCourse) {
             return res.status(404).json({ success: false, message: "Course not found" });
         }
