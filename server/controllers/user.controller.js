@@ -15,7 +15,7 @@ const checkUserRole = (user) => {
 
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({});
+        const users = await User.find({}).select("-password");
         return res.status(200).json({success: true, data: users});
     } catch (error) {
         return res.status(500).json({ success: false, message: "Server error" });
@@ -34,7 +34,7 @@ export const getUserById = async (req, res) => {
     }
 
     try {
-        const user = await User.findById(id);
+        const user = await User.findById(id).select("-password");
 
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
@@ -54,7 +54,7 @@ export const getUsersByName = async (req, res) => {
     }
 
     try {
-        const users = await User.find({name});
+        const users = await User.find({name}).select("-password");
 
         if(users.length === 0){
             return res.status(404).json({success: false, message: "No users found"});
@@ -82,7 +82,7 @@ export const createUser = async (req, res) => {
     try {
         await newUser.save(); //mongoose function to save data to db 
         const token = generateToken(newUser); 
-        return res.status(201).json({ success: true, data: newUser, token });
+        return res.status(201).json({ success: true, token });
     } catch (error) {
         console.log("Error:", error.message);
         return res.status(500).json({ success: false, message: "Server error" })
@@ -103,7 +103,7 @@ export const loginUser = async (req, res) => {
         }
 
         const token = generateToken(user);
-        res.status(200).json({ success: true, data: { user, token } });
+        res.status(200).json({ success: true, token });
     } catch (error) {
         console.error("Login Error:", error.message);
         res.status(500).json({ success: false, message: "Server error" });
@@ -128,7 +128,7 @@ export const updateUser = async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(user.password, salt);  // Hash the new password
         }
-        const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(id, user, { new: true }).select("-password");
         res.status(200).json({ success: true, data: updatedUser });
     } catch (error) {
         res.status(200).json({ success: false, message: "Server error" });
@@ -150,11 +150,11 @@ export const deleteUser = async (req, res) => {
         }
 
         if(user.role === "instructor"){
-            const courses = await Course.find({instructor_id: id})
+            const courses = await Course.find({instructor: id})
             const courseIds = courses.map((course)=> course._id)
-            await Enrollment.deleteMany({course_id: {$in: courseIds}})
+            await Enrollment.deleteMany({course: {$in: courseIds}})
             
-            await Course.deleteMany({instructor_id: id})
+            await Course.deleteMany({instructor: id})
         }
 
         await User.findByIdAndDelete(id);
@@ -169,13 +169,13 @@ export const getStudentsByCourseId = async (req, res) => {
     const { courseId } = req.params;
 
     try {
-        const enrollments = await Enrollment.find({ course_id: courseId });
+        const enrollments = await Enrollment.find({ course: courseId });
 
         if (enrollments.length === 0) {
             return res.status(404).json({ success: false, message: "No students found for this course" });
         }
 
-        const studentIds = enrollments.map(enrollment => enrollment.student_id);
+        const studentIds = enrollments.map(enrollment => enrollment.student);
 
         const students = await User.find({ _id: { $in: studentIds } });
 
