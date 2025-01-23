@@ -20,7 +20,9 @@ export const getEnrollmentById = async (req, res)=> {
     }
 
     try {
-        const enrollment = await Enrollment.findById(id);
+        const enrollment = await Enrollment.findById(id)
+            .populate("course") 
+            .populate("student"); 
 
         if (!enrollment) {
             return res.status(404).json({ success: false, message: "No enrollment found" });
@@ -33,30 +35,30 @@ export const getEnrollmentById = async (req, res)=> {
 };
 
 export const createEnrollment = async (req, res) => {
-    const {student_id, course_id} = req.body;
+    const {student, course} = req.body;
 
-    if(!student_id || !course_id){
+    if(!student || !course){
         return res.status(400).json({success: false, message: "Please provide all fields"});
     }
 
     try {
 
-        const student = await User.findById(student_id);
+        const student = await User.findById(student);
         if(student.role !== "student"){
             return res.status(400).json({success: false, message: "User is not a student"})
         }
 
-        const studentExists = await User.findById(student_id);
+        const studentExists = await User.findById(student);
         if(!studentExists){
             return res.status(404).json({success: false, message: "Student not found"});
         }
 
-        const courseExists = await Course.findById(course_id);
+        const courseExists = await Course.findById(course);
         if(!courseExists){
             return res.status(404).json({success: false, message: "Course not found"});
         }
 
-        const enrollmentExists = await Enrollment.findOne({student_id, course_id});
+        const enrollmentExists = await Enrollment.findOne({student, course});
         if(enrollmentExists){
             return res.status(409).json({success: false, message: "Enrollment already exists"})
         }
@@ -81,7 +83,7 @@ export const updateEnrollment = async (req, res) => {
     }
     
     try {
-        const student = await User.findById(enrollment.student_id);
+        const student = await User.findById(enrollment.student);
         if(student.role !== "student"){
             return res.status(400).json({success: false, message: "User is not a student"})
         }
@@ -118,7 +120,9 @@ export const getEnrollmentByStudentAndCourseId = async (req, res) => {
 
     try {
         
-        const enrollment = await Enrollment.findOne({ student_id: studentId, course_id: courseId });
+        const enrollment = await Enrollment.findOne({ student_id: studentId, course_id: courseId })
+            .populate("course") 
+            .populate("student");
 
         if (!enrollment) {
             return res.status(404).json({ success: false, message: "Enrollment not found" });
@@ -136,7 +140,9 @@ export const setEnrollmentEndDate = async (req, res) => {
 
     try {
         
-        const enrollment = await Enrollment.findById(id);
+        const enrollment = await Enrollment.findById(id)
+            .populate("course") 
+            .populate("student");
 
         if (!enrollment) {
             return res.status(404).json({ success: false, message: "Enrollment not found" });

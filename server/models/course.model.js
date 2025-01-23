@@ -10,7 +10,7 @@ const courseSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		instructor_id: {
+		instructor: {
 			type: mongoose.Schema.Types.ObjectId, // reference to the User model
 			ref: "User", 
 			required: true,

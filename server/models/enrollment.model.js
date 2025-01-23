@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const enrollmentSchema = new mongoose.Schema(
     {
-        student_id: {
+        student: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: "User", // Reference to the User model
         },
-        course_id: {
+        course: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: "Course", // Reference to the Course model

@@ -4,12 +4,12 @@ import Enrollment from "../models/enrollment.model.js";
 import User from "../models/user.model.js";
 
 const checkCourseFields = (course) => {
-    return (!course.title || !course.description || !course.instructor_id || !course.video_url);
+    return (!course.title || !course.description || !course.instructor || !course.video_url);
 }
 
 export const getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find({});
+        const courses = await Course.find({}).populate("instructor", "-password");
         return res.status(200).json({success: true, data: courses});
     } catch (error) {
         return res.status(500).json({ success: false, message: "Server error" });
@@ -24,7 +24,7 @@ export const getCourseById = async (req, res) => {
     }
 
     try {
-        const course = await Course.findById(id);
+        const course = await Course.findById(id).populate("instructor", "-password");
         if (!course) {
             return res.status(404).json({ success: false, message: "Course not found" });
         }
@@ -42,7 +42,7 @@ export const getCoursesByTitle = async (req, res) => {
     }
 
     try {
-        const courses = await Course.find({title});
+        const courses = await Course.find({title}).populate("instructor", "-password");
         
         if (courses.length === 0) {
             return res.status(404).json({ success: false, message: "No courses found" });
@@ -63,7 +63,7 @@ export const createCourse = async (req, res) => {
     }
 
     try {
-        const instructor = await User.findById(course.instructor_id);
+        const instructor = await User.findById(course.instructor);
         if(instructor.role !== "instructor"){
             return res.status(400).json({success: false, message: "User is not an instructor"})
         }
@@ -90,12 +90,12 @@ export const updateCourse = async (req, res) => {
     }
     
     try {
-        const instructor = await User.findById(course.instructor_id);
+        const instructor = await User.findById(course.instructor);
         if(instructor.role !== "instructor"){
             return res.status(400).json({success: false, message: "User is not an instructor"})
         }
 
-        const updatedCourse = await Course.findByIdAndUpdate(id, course, {new: true}); 
+        const updatedCourse = await Course.findByIdAndUpdate(id, course, {new: true}).populate("instructor", "-password"); 
         return res.status(200).json({success: true, data: updatedCourse});
     } catch (error) {
         res.status(200).json({ success: false, message: "Server error" });
@@ -124,7 +124,7 @@ export const getCoursesByInstructorId = async (req, res) => {
     const { instructorId } = req.params;
 
     try {
-        const courses = await Course.find({ instructor_id: instructorId });
+        const courses = await Course.find({ instructor: instructorId }).populate("instructor", "-password");
 
         if (courses.length === 0) {
             return res.status(404).json({ success: false, message: "No courses found for this instructor" });
@@ -141,15 +141,15 @@ export const getCoursesByStudentId = async (req, res) => {
     const { studentId } = req.params;
 
     try {
-        const enrollments = await Enrollment.find({ student_id: studentId });
+        const enrollments = await Enrollment.find({ student: studentId });
 
         if (enrollments.length === 0) {
             return res.status(404).json({ success: false, message: "No courses found for this student" });
         }
 
-        const courseIds = enrollments.map(enrollment => enrollment.course_id);
+        const courseIds = enrollments.map(enrollment => enrollment.course);
 
-        const courses = await Course.find({ _id: { $in: courseIds } });
+        const courses = await Course.find({ _id: { $in: courseIds } }).populate("instructor", "-password");
 
         res.status(200).json({ success: true, data: courses });
     } catch (error) {
@@ -163,11 +163,11 @@ export const getCoursesNotEnrolledByStudentId = async (req, res) => {
 
     try {
         
-        const enrollments = await Enrollment.find({ student_id: studentId });
+        const enrollments = await Enrollment.find({ student: studentId });
 
-        const enrolledCourseIds = enrollments.map(enrollment => enrollment.course_id);
+        const enrolledCourseIds = enrollments.map(enrollment => enrollment.course);
 
-        const courses = await Course.find({ _id: { $nin: enrolledCourseIds } });
+        const courses = await Course.find({ _id: { $nin: enrolledCourseIds } }).populate("instructor", "-password");
 
         if (courses.length === 0) {
             return res.status(404).json({ success: false, message: "No unenrolled courses found" });
