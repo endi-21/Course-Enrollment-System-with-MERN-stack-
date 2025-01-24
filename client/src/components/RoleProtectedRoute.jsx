@@ -4,7 +4,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 const RoleProtectedRoute = ({ role, children }) => {
 	const { user } = useAuthContext();
 
-	const userRole = user?.data?.user?.role;
+	const userRole = user?.role;
 
 	if (!user) {
 		return <Navigate to="/login" />;

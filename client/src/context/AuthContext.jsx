@@ -1,37 +1,38 @@
-import { createContext, useReducer, useEffect } from 'react'
+import { createContext, useReducer, useEffect } from 'react';
+import {jwtDecode} from 'jwt-decode';
 
-export const AuthContext = createContext()
+export const AuthContext = createContext();
 
 export const authReducer = (state, action) => {
-	switch (action.type) {
-		case 'LOGIN':
-			return { user: action.payload }
-		case 'LOGOUT':
-			return { user: null }
-		default:
-			return state
-	}
-}
+  switch (action.type) {
+    case 'LOGIN':
+      return { user: action.payload };
+    case 'LOGOUT':
+      return { user: null };
+    default:
+      return state;
+  }
+};
 
 export const AuthContextProvider = ({ children }) => {
-	const [state, dispatch] = useReducer(authReducer, {
-		user: null
-	})
+  const [state, dispatch] = useReducer(authReducer, { user: null });
 
-	useEffect(() => {
-		const user = JSON.parse(localStorage.getItem('user'))
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
 
-		if (user) {
-			dispatch({ type: 'LOGIN', payload: user })
-		}
-	}, [])
+    if (token) {
+      try {
+        const decodedUser = jwtDecode(token);
+        dispatch({ type: 'LOGIN', payload: decodedUser });
+      } catch (err) {
+        console.error('Invalid token:', err);
+      }
+    }
+  }, []);
 
-	console.log('AuthContext state:', state)
-
-	return (
-		<AuthContext.Provider value={{ ...state, dispatch }}>
-			{children}
-		</AuthContext.Provider>
-	)
-
-}
+  return (
+    <AuthContext.Provider value={{ ...state, dispatch }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

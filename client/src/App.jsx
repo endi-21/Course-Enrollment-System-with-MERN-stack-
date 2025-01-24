@@ -29,7 +29,7 @@ function App() {
 	const { user } = useAuthContext();
 
 	const dashboard = (() => {
-		const role = user?.data?.user?.role;
+		const role = user?.role;
 
 		switch (role) {
 			case 'student':
