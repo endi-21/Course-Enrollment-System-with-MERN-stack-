@@ -120,7 +120,7 @@ export const getEnrollmentByStudentAndCourseId = async (req, res) => {
 
     try {
         
-        const enrollment = await Enrollment.findOne({ student_id: studentId, course_id: courseId })
+        const enrollment = await Enrollment.findOne({ student: studentId, course: courseId })
             .populate("course") 
             .populate("student");
 
