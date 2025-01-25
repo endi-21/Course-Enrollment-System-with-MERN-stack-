@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
+import { useAuthContext } from '../hooks/useAuthContext.js';
+import userDefaultPic from '../assets/userDefaultPic.png'
+
 
 const Navbar = ({ dashboard }) => {
     const { logout } = useLogout();
@@ -11,9 +14,8 @@ const Navbar = ({ dashboard }) => {
         navigate('/login');
     };
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const profilePic = user?.data?.user?.profilePic || 'https://static.vecteezy.com/system/resources/previews/002/387/693/non_2x/user-profile-icon-free-vector.jpg';
-
+    const { user } = useAuthContext();
+    const profilePic = user?.profilePic || userDefaultPic;
     return (
         <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '20px' }} /*put to css later*/>
             <Link to={`/${dashboard}/`} style={{ margin: '0 10px' }}>
