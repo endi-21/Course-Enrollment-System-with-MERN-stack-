@@ -4,17 +4,18 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 export default function CourseCard(props) {
     const { courseData } = props;
     const navigate = useNavigate();
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const userId = user?.data?.user?._id;
-    const userRole = user?.data?.user?.role;
+    const user = useAuthContext();
+    const userId = user?.id;
+    const userRole = user?.role;
 
     const handleCardClick = () => {
-        if (userId === courseData.instructor_id || userRole === 'admin') {
+        if (userId === courseData.instructor || userRole === 'admin') {
             navigate('/edit-course', { state: { course: courseData } });
         } else {
             navigate('/course-details', { state: { course: courseData } });
