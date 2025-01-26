@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLogout } from '../hooks/useLogout';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const EditUser = () => {
+	const loggedUser = useAuthContext()
+	const { dispatch } = useAuthContext();
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { logout } = useLogout();
-	const { userId } = location.state || {};
+	const { user } = location.state || {};
+	const token = localStorage.getItem("authToken");
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
@@ -17,31 +21,16 @@ const EditUser = () => {
 	});
 
 	useEffect(() => {
-		const fetchUserData = async () => {
-			try {
-				const response = await axios.get(`http://localhost:5000/api/users/${userId}`, {
-					headers: {
-						Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
-					},
-				});
-
-				if (response.data.success) {
-					const { name, email, profilePic, description } = response.data.data;
-					setFormData({
-						name,
-						email,
-						profilePic,
-						description: description || '',
-						password: '', 
-					});
-				}
-			} catch (error) {
-				console.error('Error fetching user data:', error);
-			}
-		};
-
-		fetchUserData();
-	}, [userId]);
+		if (user) {
+			setFormData({
+				name: user.name,
+				email: user.email,
+				profilePic: user.profilePic,
+				description: user.description || '',
+				password: '',
+			});
+		}
+	}, [user]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -55,14 +44,19 @@ const EditUser = () => {
 		e.preventDefault();
 
 		try {
-			await axios.put(`http://localhost:5000/api/users/${userId}`, formData, {
+			await axios.put(`http://localhost:5000/api/users/${user.id}`, formData, {
 				headers: {
-					Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
+					Authorization: `Bearer ${token}`,
 				},
 			});
 
+			if (loggedUser?.role !== 'admin') {
+				const updatedUser = { ...user, ...formData };
+				dispatch({ type: 'LOGIN', payload: updatedUser });
+			}
+
 			alert('User updated successfully!');
-			navigate('/'); 
+			navigate('/');
 		} catch (error) {
 			console.error('Error updating user:', error);
 			alert('Failed to update user. Please try again.');
@@ -71,32 +65,30 @@ const EditUser = () => {
 
 	const handleDeleteUser = async () => {
 		try {
-			await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+			await axios.delete(`http://localhost:5000/api/users/${user.id}`, {
 				headers: {
-					Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
+					Authorization: `Bearer ${token}`,
 				},
 			});
-	
+
 			alert('User deleted successfully!');
-	
-			const currentUser = JSON.parse(localStorage.getItem('user'));
-			if (currentUser?.data?.user?.role !== 'admin') {
-				logout(); 
+
+			if (loggedUser?.role !== 'admin') {
+				logout();
 			}
-	
-			navigate('/'); 
+			//navigate('/'); 
 		} catch (error) {
 			console.error('Error deleting user:', error);
 			alert('Failed to delete user. Please try again.');
 		}
 	};
-	
+
 
 	return (
 		<div>
 			<h2>Edit User</h2>
 
-			<p>ID: {userId}</p>
+			<p>ID: {user.id}</p>
 
 			<form onSubmit={handleSubmit}>
 				<label>
