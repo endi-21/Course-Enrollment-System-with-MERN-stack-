@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../hooks/useAuthContext';
 
 const EditCourse = () => {
 	const navigate = useNavigate();
@@ -15,7 +14,6 @@ const EditCourse = () => {
         video_url: '',
     });
 
-    const {user} = useAuthContext()
 
     const handleDeleteCourse = async () => {
 		try {
@@ -74,6 +72,7 @@ const EditCourse = () => {
 
             if (response.data.success) {
                 alert('Course updated successfully!');
+                navigate('/Instructordashboard'); 
             } else {
                 throw new Error(response.data.message || 'Failed to update course.');
             }
