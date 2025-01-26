@@ -5,7 +5,9 @@ import Course from "../models/course.model.js";
 
 export const getAllEnrollments = async (req, res) => {
     try {
-        const enrollments = await Enrollment.find({});
+        const enrollments = await Enrollment.find({})
+            .populate("course") 
+            .populate("student");
         return res.status(200).json({success: true, data: enrollments});
     } catch (error) {
         return res.status(500).json({ success: false, message: "Server error" });
@@ -35,44 +37,43 @@ export const getEnrollmentById = async (req, res)=> {
 };
 
 export const createEnrollment = async (req, res) => {
-    const {student, course} = req.body;
+    const { student, course } = req.body;
 
-    if(!student || !course){
-        return res.status(400).json({success: false, message: "Please provide all fields"});
+    if (!student || !course) {
+        return res.status(400).json({ success: false, message: "Please provide all fields" });
     }
 
     try {
-
-        const student = await User.findById(student);
-        if(student.role !== "student"){
-            return res.status(400).json({success: false, message: "User is not a student"})
+        const foundStudent = await User.findById(student);
+        if (!foundStudent) {
+            return res.status(404).json({ success: false, message: "Student not found" });
         }
 
-        const studentExists = await User.findById(student);
-        if(!studentExists){
-            return res.status(404).json({success: false, message: "Student not found"});
+        if (foundStudent.role !== "student") {
+            return res.status(400).json({ success: false, message: "User is not a student" });
         }
 
         const courseExists = await Course.findById(course);
-        if(!courseExists){
-            return res.status(404).json({success: false, message: "Course not found"});
+        if (!courseExists) {
+            return res.status(404).json({ success: false, message: "Course not found" });
         }
 
-        const enrollmentExists = await Enrollment.findOne({student, course});
-        if(enrollmentExists){
-            return res.status(409).json({success: false, message: "Enrollment already exists"})
+        const enrollmentExists = await Enrollment.findOne({ student, course });
+        if (enrollmentExists) {
+            return res.status(409).json({ success: false, message: "Enrollment already exists" });
         }
 
-        const enrollment = new Enrollment({...req.body, start_date: new Date()})
+        const enrollment = new Enrollment({ ...req.body, start_date: new Date() });
 
         await enrollment.save();
-        return res.status(201).json({success: true, data: enrollment})
+        return res.status(201).json({ success: true, data: enrollment });
 
     } catch (error) {
         console.error("Error creating enrollment:", error.message);
         return res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
 
 export const updateEnrollment = async (req, res) => {
     const {id} = req.params;

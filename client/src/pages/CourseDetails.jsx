@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const CourseDetails = () => {
     const location = useLocation();
     const { course } = location.state || {};
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [enrollmentId, setEnrollmentId] = useState(null);
-    const user = JSON.parse(localStorage.getItem('user'));
-    const studentId = user?.data?.user?._id || null;
+    const { user } = useAuthContext();
+    const studentId = user?.id || null;
     const [endDate, setEndDate] = useState(null);
+    const token = localStorage.getItem("authToken"); 
 
     useEffect(() => {
         if (!course) return;
@@ -37,12 +39,12 @@ const CourseDetails = () => {
             const response = await axios.post(
                 'http://localhost:5000/api/enrollments/',
                 {
-                    student_id: studentId,
-                    course_id: course._id,
+                    student: studentId,
+                    course: course._id,
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${user.data.token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
@@ -56,12 +58,12 @@ const CourseDetails = () => {
     };
 
 
-    const handleUnenroll = async () => {
+    const handleUnroll = async () => {
         try {
             const response = await axios.delete(`http://localhost:5000/api/enrollments/${enrollmentId}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${user.data.token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
             if (response.data.success) {
@@ -81,7 +83,7 @@ const CourseDetails = () => {
                 {}, 
                 {
                     headers: {
-                        Authorization: `Bearer ${user.data.token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
@@ -100,7 +102,7 @@ const CourseDetails = () => {
     return (
         <div>
             <h1>Title: {course.title}</h1>
-            <h2>Instructor: {course.instructorName}</h2>
+            <h2>Instructor: {course.instructor.name}</h2>
             <p><strong>Course ID:</strong> {course._id}</p>
             <p><strong>Description:</strong> {course.description}</p>
             <p><strong>Released on:</strong> {course.createdAt}</p>
@@ -121,7 +123,7 @@ const CourseDetails = () => {
             <div>
                 {isEnrolled ? (
                     <div>
-                        <button onClick={handleUnenroll}>Unenroll</button>
+                        <button onClick={handleUnroll}>Unroll</button>
                         <button onClick={handleMarkAsFinished} disabled={!!endDate}>
                             Mark as finished
                         </button>
