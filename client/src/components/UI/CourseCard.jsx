@@ -30,9 +30,9 @@ export default function CourseCard(props) {
                     <Typography gutterBottom variant="h5" component="div">
                         {courseData.title}
                     </Typography>
-                    {userId !== courseData.instructor_id && (
+                    {user.id !== courseData.instructor._id && (
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                            Instructor: {courseData.instructorName}
+                            Instructor: {courseData.instructor.name}
                         </Typography>
                     )}
                 </CardContent>
