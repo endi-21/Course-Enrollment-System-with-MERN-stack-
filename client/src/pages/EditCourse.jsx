@@ -2,24 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const EditCourse = () => {
 	const navigate = useNavigate();
     const location = useLocation();
     const { course } = location.state || {};
+    const token = localStorage.getItem("authToken"); 
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         video_url: '',
     });
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    const {user} = useAuthContext()
 
     const handleDeleteCourse = async () => {
 		try {
 			await axios.delete(`http://localhost:5000/api/courses/${course._id}`, {
 				headers: {
-					Authorization: `Bearer ${JSON.parse(localStorage.getItem('user'))?.data?.token}`,
+					Authorization: `Bearer ${token}`,
 				},
 			});
 
@@ -56,7 +58,7 @@ const EditCourse = () => {
             title: formData.title || '',
             description: formData.description || '',
             video_url: formData.video_url || '',
-            instructor_id: course.instructor_id, 
+            instructor: course.instructor, 
         };
 
         try {
@@ -65,7 +67,7 @@ const EditCourse = () => {
                 payload,
                 {
                     headers: {
-                        Authorization: `Bearer ${user.data.token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
