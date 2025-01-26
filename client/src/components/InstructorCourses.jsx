@@ -1,22 +1,23 @@
 import { useState, useEffect } from 'react';
 import CourseCard from './UI/CourseCard';
 import axios from 'axios';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const InstructorCourses = () => {
     const [courses, setCourses] = useState([]);
     const [error, setError] = useState(null);
+    const {user} = useAuthContext()
 
     useEffect(() => {
         const fetchCourses = async () => {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (!user || !user.data?.user?._id) {
+            if (!user || !user.id) {
                 setError('User information is missing or invalid');
                 return;
             }
 
             try {
                 const courseResponse = await axios.get(
-                    `http://localhost:5000/api/courses/instructor/${user.data.user._id}`
+                    `http://localhost:5000/api/courses/instructor/${user.id}`
                 );
 
                 setCourses(courseResponse.data.data); 
@@ -29,7 +30,7 @@ const InstructorCourses = () => {
     }, []);
 
     if (!courses.length) {
-        return <div>You have not enrolled any courses yet!</div>;
+        return <div>You have no courses yet!</div>;
     } else if (error) {
         return <div>Error: {error}</div>;
     }

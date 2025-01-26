@@ -10,12 +10,12 @@ export default function CourseCard(props) {
     const { courseData } = props;
     const navigate = useNavigate();
 
-    const user = useAuthContext();
+    const {user} = useAuthContext();
     const userId = user?.id;
     const userRole = user?.role;
 
     const handleCardClick = () => {
-        if (userId === courseData.instructor || userRole === 'admin') {
+        if (userId === courseData.instructor._id || userRole === 'admin') {
             navigate('/edit-course', { state: { course: courseData } });
         } else {
             navigate('/course-details', { state: { course: courseData } });
