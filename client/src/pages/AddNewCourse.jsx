@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const AddNewCourse = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         video_url: '',
-        instructor_id: '', 
+        instructor: '', 
     });
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const role = user?.data?.user?.role; 
-    const instructorId = role === 'instructor' ? user?.data?.user?._id : ''; 
+    const {user} = useAuthContext()
+    const token = localStorage.getItem("authToken"); 
+    const role = user?.role; 
+    const instructorId = role === 'instructor' ? user.id : ''; 
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -28,13 +30,13 @@ const AddNewCourse = () => {
 
         const payload = {
             ...formData,
-            instructor_id: role === 'instructor' ? instructorId : formData.instructor_id, 
+            instructor: role === 'instructor' ? instructorId : formData.instructor, 
         };
 
         try {
             const response = await axios.post('http://localhost:5000/api/courses', payload, {
                 headers: {
-                    Authorization: `Bearer ${user?.data?.token}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
@@ -90,7 +92,7 @@ const AddNewCourse = () => {
                     <input
                         type="text"
                         name="instructor_id"
-                        value={formData.instructor_id}
+                        value={formData.instructor}
                         onChange={handleChange}
                         required
                     />
