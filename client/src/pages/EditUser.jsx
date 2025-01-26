@@ -76,7 +76,7 @@ const EditUser = () => {
 			if (loggedUser?.role !== 'admin') {
 				logout();
 			}
-			//navigate('/'); 
+			navigate('/'); 
 		} catch (error) {
 			console.error('Error deleting user:', error);
 			alert('Failed to delete user. Please try again.');

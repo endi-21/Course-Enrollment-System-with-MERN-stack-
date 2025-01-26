@@ -156,6 +156,9 @@ export const deleteUser = async (req, res) => {
             
             await Course.deleteMany({instructor: id})
         }
+        if(user.role === "student"){
+            await Enrollment.deleteMany({ student: id });
+        }
 
         await User.findByIdAndDelete(id);
 		res.status(200).json({ success: true, message: "User deleted" });
