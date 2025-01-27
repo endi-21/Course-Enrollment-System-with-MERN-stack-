@@ -123,7 +123,7 @@ const CourseDetails = () => {
                     allowFullScreen
                 ></iframe>
             </div>
-
+            <br />
             <div>
                 {isEnrolled ? (
                     <div>

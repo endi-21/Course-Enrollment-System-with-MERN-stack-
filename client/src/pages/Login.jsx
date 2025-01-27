@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 const Login = () => {
 	const [email, setEmail] = useState('');
@@ -15,36 +17,48 @@ const Login = () => {
 	};
 
 	const navigateToSignup = () => {
-		navigate('/signup'); 
+		navigate('/signup');
 	};
 
 	return (
-		<div>
+		<div className="login-container">
 			<form className="login" onSubmit={handleSubmit}>
 				<h3>Log In</h3>
-
-				<label>Email address:</label>
-				<input
-					type="email"
-					onChange={(e) => setEmail(e.target.value)}
+				<TextField
+					className="textfield"
+					id="email"
+					label="Email address"
+					variant="standard"
+					name="email"
 					value={email}
-				/>
-				<label>Password:</label>
-				<input
-					type="password"
-					onChange={(e) => setPassword(e.target.value)}
-					value={password}
+					onChange={(e) => setEmail(e.target.value)}
+					required
+					fullWidth
+					margin="normal"
 				/>
 
-				<button disabled={isLoading}>Log in</button>
+				<TextField
+					className="textfield"
+					id="password"
+					label="Password"
+					variant="standard"
+					type="password"
+					name="password"
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+					required
+					fullWidth
+					margin="normal"
+				/>
+
+
+				<Button className='purple' variant="contained" type="submit" disabled={isLoading}>Log in</Button>
 				{error && <div className="error">{error}</div>}
-			</form>
-			<br />
-			<div >
-				<button onClick={navigateToSignup} >
+
+				<Button className="sign-in-up-btn" onClick={navigateToSignup} >
 					Sign Up
-				</button>
-			</div>
+				</Button>
+			</form>
 		</div>
 	);
 };
