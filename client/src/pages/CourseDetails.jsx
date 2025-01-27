@@ -12,6 +12,7 @@ const CourseDetails = () => {
     const studentId = user?.id || null;
     const [endDate, setEndDate] = useState(null);
     const token = localStorage.getItem("authToken"); 
+    const videoId = course.video_url.split('v=')[1].split('&')[0];
 
     useEffect(() => {
         if (!course) return;
@@ -98,7 +99,7 @@ const CourseDetails = () => {
     if (!course) {
         return <p>No course data available.</p>;
     }
-
+    
     return (
         <div>
             <h1>Title: {course.title}</h1>
@@ -113,7 +114,7 @@ const CourseDetails = () => {
                 <iframe
                     width="600"
                     height="400"
-                    src={course.video_url}
+                    src={`https://www.youtube.com/embed/${videoId}`}
                     title="Course Video"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
