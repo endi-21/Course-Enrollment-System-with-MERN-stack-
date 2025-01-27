@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthContext } from '../hooks/useAuthContext';
+import Button from "@mui/material/Button";
 
 const CourseDetails = () => {
     const location = useLocation();
     const { course } = location.state || {};
     const [isEnrolled, setIsEnrolled] = useState(false);
-    const [enrollmentId, setEnrollmentId] = useState(null);
+    const [enrollment, setEnrollment] = useState(null);
     const { user } = useAuthContext();
     const studentId = user?.id || null;
     const [endDate, setEndDate] = useState(null);
-    const token = localStorage.getItem("authToken"); 
+    const token = localStorage.getItem("authToken");
     const videoId = course.video_url.split('v=')[1].split('&')[0];
 
     useEffect(() => {
@@ -22,7 +23,7 @@ const CourseDetails = () => {
                 const response = await axios.get(`http://localhost:5000/api/enrollments/${studentId}/${course._id}`);
                 if (response.data.success) {
                     setIsEnrolled(true);
-                    setEnrollmentId(response.data.data._id);
+                    setEnrollment(response.data.data);
                     setEndDate(response.data.data.end_date);
                 } else {
                     setIsEnrolled(false);
@@ -51,7 +52,7 @@ const CourseDetails = () => {
             );
             if (response.data.success) {
                 setIsEnrolled(true);
-                setEnrollmentId(response.data.data._id);
+                setEnrollment(response.data.data);
             }
         } catch (error) {
             console.error('Error enrolling:', error);
@@ -61,7 +62,7 @@ const CourseDetails = () => {
 
     const handleUnroll = async () => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/enrollments/${enrollmentId}`,
+            const response = await axios.delete(`http://localhost:5000/api/enrollments/${enrollment._id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -69,7 +70,7 @@ const CourseDetails = () => {
                 });
             if (response.data.success) {
                 setIsEnrolled(false);
-                setEnrollmentId(null);
+                setEnrollment(null);
                 setEndDate(null);
             }
         } catch (error) {
@@ -80,8 +81,8 @@ const CourseDetails = () => {
     const handleMarkAsFinished = async () => {
         try {
             const response = await axios.put(
-                `http://localhost:5000/api/enrollments/${enrollmentId}/end-date`,
-                {}, 
+                `http://localhost:5000/api/enrollments/${enrollment._id}/end-date`,
+                {},
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -89,7 +90,7 @@ const CourseDetails = () => {
                 }
             );
             if (response.data.success) {
-                setEndDate(true);
+                setEndDate(response.data.data.end_date);
             }
         } catch (error) {
             console.error('Error finishing course:', error);
@@ -99,7 +100,7 @@ const CourseDetails = () => {
     if (!course) {
         return <p>No course data available.</p>;
     }
-    
+
     return (
         <div>
             <h1>Title: {course.title}</h1>
@@ -107,7 +108,9 @@ const CourseDetails = () => {
             <p><strong>Course ID:</strong> {course._id}</p>
             <p><strong>Description:</strong> {course.description}</p>
             <p><strong>Released on:</strong> {course.createdAt}</p>
-
+            {endDate && (
+                <p><strong>Finished on:</strong> {endDate}</p>
+            )}
 
             <div>
                 <h3>Course Video</h3>
@@ -124,13 +127,13 @@ const CourseDetails = () => {
             <div>
                 {isEnrolled ? (
                     <div>
-                        <button onClick={handleUnroll}>Unroll</button>
-                        <button onClick={handleMarkAsFinished} disabled={!!endDate}>
+                        <Button variant="outlined" color="error" onClick={handleUnroll} >Unroll</Button>
+                        <Button className='purple' variant="contained" onClick={handleMarkAsFinished} disabled={!!endDate}>
                             Mark as finished
-                        </button>
+                        </Button>
                     </div>
                 ) : (
-                    <button onClick={handleEnroll}>Enroll</button>
+                    <Button className='purple' variant="contained" onClick={handleEnroll}>Enroll</Button>
                 )}
             </div>
         </div>
