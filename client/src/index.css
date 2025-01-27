@@ -50,6 +50,24 @@ body {
 }
 
 .purple.MuiButton-contained {
-    background-color: #3c2b8f;
+    background-color: var(--primary-color); 
+    color: white; 
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.purple.MuiButton-contained:hover {
+    background-color: transparent; 
+    color: var(--primary-color); 
+    border: 2px solid var(--primary-color); 
+}
+
+.round.MuiButton-contained {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    min-width: 40px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}

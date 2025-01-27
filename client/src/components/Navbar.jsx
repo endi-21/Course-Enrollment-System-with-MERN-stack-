@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
 import { useAuthContext } from '../hooks/useAuthContext.js';
 import userDefaultPic from '../assets/userDefaultPic.png'
-
+import Button from "@mui/material/Button";
 
 const Navbar = ({ dashboard }) => {
     const { logout } = useLogout();
@@ -33,9 +33,9 @@ const Navbar = ({ dashboard }) => {
                 alt="User Profile"
                 style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} /*put to css later*/
             />
-            <button onClick={handleLogout}>
+            <Button variant="outlined" color="error" onClick={handleLogout} >
                 Log out
-            </button>
+            </Button>
         </nav>
     );
 };

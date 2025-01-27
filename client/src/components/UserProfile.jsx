@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
+import Button from "@mui/material/Button";
 
 const UserProfile = () => {
     const navigate = useNavigate();
@@ -17,9 +18,9 @@ const UserProfile = () => {
             <img src={user.profilePic} alt="Profile" width="150" />
             <p><strong>Description:</strong> {user.description || 'No description provided.'}</p>
 
-            <button onClick={() => navigate('/edit-user', { state: { user } })}>
+            <Button className='purple' variant="contained" onClick={() => navigate('/edit-user', { state: { user } })}>
                 Edit
-            </button>
+            </Button>
         </div>
     );
 };
