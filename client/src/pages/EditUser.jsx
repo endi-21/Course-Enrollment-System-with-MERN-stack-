@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLogout } from '../hooks/useLogout';
 import { useAuthContext } from '../hooks/useAuthContext';
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const EditUser = () => {
 	const loggedUser = useAuthContext()
@@ -76,7 +79,7 @@ const EditUser = () => {
 			if (loggedUser?.role !== 'admin') {
 				logout();
 			}
-			navigate('/'); 
+			navigate('/');
 		} catch (error) {
 			console.error('Error deleting user:', error);
 			alert('Failed to delete user. Please try again.');
@@ -85,62 +88,37 @@ const EditUser = () => {
 
 
 	return (
-		<div>
+		<div className='form'>
 			<h2>Edit User</h2>
 
-			<p>ID: {user.id}</p>
-
 			<form onSubmit={handleSubmit}>
-				<label>
-					Name:
-					<input
-						type="text"
-						name="name"
-						value={formData.name}
-						onChange={handleChange}
-						required
-					/>
-				</label> <br />
-				<label>
-					Email:
-					<input
-						type="email"
-						name="email"
-						value={formData.email}
-						onChange={handleChange}
-						required
-					/>
-				</label> <br />
-				<label>
-					Profile Picture URL:
-					<input
-						type="url"
-						name="profilePic"
-						value={formData.profilePic}
-						onChange={handleChange}
-					/>
-				</label> <br />
-				<label>
-					Description:
-					<textarea
-						name="description"
-						value={formData.description}
-						onChange={handleChange}
-					/>
-				</label> <br />
-				<label>
-					Password:
-					<input
-						type="password"
-						name="password"
-						value={formData.password}
-						onChange={handleChange}
-						required
-					/>
-				</label> <br /> <br />
-				<button type="submit">Update User</button>
+				<TextField className="textfield"
+					id="name" label="Name" variant="standard" name="name"
+					value={formData.name} onChange={handleChange} required fullWidth margin="normal"
+				/>
+
+				<TextField className="textfield"
+					id="email" label="Email" variant="standard" name="email"
+					value={formData.email} onChange={handleChange} required fullWidth margin="normal"
+				/>
+				<TextField className="textfield"
+                    id="profilePic" label="Profile Picture URL" variant="standard" name="profilePic" type="url"
+                    value={formData.profilePic} onChange={handleChange} fullWidth margin="normal"
+                />
+				
+				<TextField className="textfield"
+                    id="description" label="Description" variant="standard" name="description"
+                    value={formData.description} onChange={handleChange} required fullWidth margin="normal"
+                />
+				<TextField className="textfield"
+                    id="password" label="Password" type="password" variant="standard" name="password" 
+                    value={formData.password} onChange={handleChange} required fullWidth margin="normal"
+                />
+				<Button className='purple' variant="contained" type="submit">Update User</Button>
 			</form>
-			<button onClick={handleDeleteUser}>Delete User</button>
+			<Button variant="outlined" startIcon={<DeleteIcon />} color="error" onClick={handleDeleteUser} >
+                Delete User
+            </Button>
 		</div>
 
 	);
