@@ -9,16 +9,20 @@ const UserProfile = () => {
     const { user } = useAuthContext()
 
     return (
-        <div>
+        <div className='user-profile'>
             <h2>User Profile</h2>
             <p><strong>Role:</strong> {user.role}</p>
             <p><strong>Name:</strong> {user.name}</p>
             <p><strong>Email:</strong> {user.email}</p>
             <p><strong>Profile Picture:</strong></p>
             <img src={user.profilePic} alt="Profile" width="150" />
-            <p><strong>Description:</strong> {user.description || 'No description provided.'}</p>
+            {user.description && (
+                <p><strong>Description:</strong> {user.description}</p>
+            )}
+            <br />
 
-            <Button className='purple' variant="contained" onClick={() => navigate('/edit-user', { state: { user } })}>
+            <Button className='purple' variant="contained" style={{ marginTop: '5%' }}
+                onClick={() => navigate('/edit-user', { state: { user } })}>
                 Edit
             </Button>
         </div>
