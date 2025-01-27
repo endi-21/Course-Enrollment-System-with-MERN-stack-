@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthContext } from '../hooks/useAuthContext';
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 const AddNewCourse = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         video_url: '',
-        instructor: '', 
+        instructor: '',
     });
 
-    const {user} = useAuthContext()
-    const token = localStorage.getItem("authToken"); 
-    const role = user?.role; 
-    const instructorId = role === 'instructor' ? user.id : ''; 
+    const { user } = useAuthContext()
+    const token = localStorage.getItem("authToken");
+    const role = user?.role;
+    const instructorId = role === 'instructor' ? user.id : '';
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -30,7 +32,7 @@ const AddNewCourse = () => {
 
         const payload = {
             ...formData,
-            instructor: role === 'instructor' ? instructorId : formData.instructor, 
+            instructor: role === 'instructor' ? instructorId : formData.instructor,
         };
 
         try {
@@ -42,7 +44,7 @@ const AddNewCourse = () => {
 
             if (response.data.success) {
                 alert('Course added successfully!');
-                navigate('/Instructordashboard'); 
+                navigate('/Instructordashboard');
             }
         } catch (error) {
             console.error('Error adding course:', error);
@@ -51,57 +53,43 @@ const AddNewCourse = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <div className='form'>
             <h2>Add New Course</h2>
 
-            <label>
-                Title:
-                <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    required
+            <form onSubmit={handleSubmit}>
+
+                <TextField className="textfield"
+                    id="title" label="Title" variant="standard" name="title"
+                    value={formData.title} onChange={handleChange} required fullWidth margin="normal"
                 />
-            </label> <br />
 
-            <label>
-                Description:
-                <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    required
-                ></textarea>
-            </label> <br />
-
-            <label>
-                Video URL:
-                <input
-                    type="url"
-                    name="video_url"
-                    value={formData.video_url}
-                    onChange={handleChange}
-                    required
+                <TextField className="textfield"
+                    id="description" label="Description" variant="standard" name="description" multiline maxRows={4}
+                    value={formData.description} onChange={handleChange} required fullWidth margin="normal"
                 />
-            </label> <br />
 
-            {role === 'admin' && (
-                <label>
-                    Instructor ID:
-                    <input
-                        type="text"
-                        name="instructor_id"
-                        value={formData.instructor}
-                        onChange={handleChange}
-                        required
-                    />
-                </label>
-            )}
+                <TextField className="textfield"
+                    id="video_url" label="Video URL" variant="standard" name="video_url"
+                    value={formData.video_url} onChange={handleChange} fullWidth margin="normal"
+                />
 
-            <br /> <br />
-            <button type="submit">Add Course</button>
-        </form>
+                {role === 'admin' && (
+                    <label>
+                        Instructor ID:
+                        <input
+                            type="text"
+                            name="instructor_id"
+                            value={formData.instructor}
+                            onChange={handleChange}
+                            required
+                        />
+                    </label>
+                )}
+
+                <br /> <br />
+                <Button className='purple' variant="contained" type="submit">Add Course</Button>
+            </form>
+        </div>
     );
 };
 

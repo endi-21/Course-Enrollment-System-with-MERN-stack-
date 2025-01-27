@@ -90,7 +90,7 @@ const EditCourse = () => {
     }
 
     return (
-        <div className='edit-course'>
+        <div className='form'>
             <h1>Edit Course</h1>
             <form onSubmit={handleSubmit}>
                 <TextField className="textfield"
