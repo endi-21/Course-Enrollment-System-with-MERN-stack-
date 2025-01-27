@@ -89,7 +89,7 @@ body {
 }
 
 .navbar-link {
-    margin: 0 90px;  /* Increase spacing between links */
+    margin: 0 90px;  
     text-decoration: none;
     color: white; 
     font-weight: 500;
@@ -112,3 +112,11 @@ body {
     align-items: center;
 }
 
+/* Course List */
+.course-list {
+    display: flex;
+    flex-wrap: wrap; 
+    width: 75vw; 
+    margin: 0 auto; 
+    gap: 1rem; 
+}

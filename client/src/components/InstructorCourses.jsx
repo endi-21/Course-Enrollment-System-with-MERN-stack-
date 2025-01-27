@@ -38,7 +38,7 @@ const InstructorCourses = () => {
     return (
         <div>
             <h2>My Courses</h2>
-            <div>
+            <div className='course-list'>
                 {courses.map((course) => (
                     <CourseCard
                         key={course._id}

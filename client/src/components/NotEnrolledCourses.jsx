@@ -43,7 +43,7 @@ const NotEnrolledCourses = () => {
     return (
         <div>
             <h2>Check the other courses:</h2>
-            <div>
+            <div className='course-list'>
                 {courses.map((course) => (
                     <CourseCard
                         key={course._id}
