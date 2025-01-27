@@ -16,26 +16,24 @@ const Navbar = ({ dashboard }) => {
 
     const { user } = useAuthContext();
     const profilePic = user?.profilePic || userDefaultPic;
-    return (
-        <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '20px' }} /*put to css later*/>
-            <Link to={`/${dashboard}/`} style={{ margin: '0 10px' }}>
-                Home
-            </Link>
-            <Link to={`/${dashboard}/profile`} style={{ margin: '0 10px' }}>
-                Profile
-            </Link>
-            <Link to={`/${dashboard}/search`} style={{ margin: '0 10px' }}>
-                Search
-            </Link>
 
-            <img
-                src={profilePic}
-                alt="User Profile"
-                style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '10px' }} /*put to css later*/
-            />
-            <Button variant="outlined" color="error" onClick={handleLogout} >
-                Log out
-            </Button>
+    return (
+        <nav className="navbar">
+            <div className="navbar-links">
+                <Link to={`/${dashboard}/`} className="navbar-link">Home</Link>
+                <Link to={`/${dashboard}/profile`} className="navbar-link">Profile</Link>
+                <Link to={`/${dashboard}/search`} className="navbar-link">Search</Link>
+            </div>
+            <div className="navbar-actions">
+                <img
+                    src={profilePic}
+                    alt="User Profile"
+                    className="navbar-profile-pic"
+                />
+                <Button variant="outlined" color="error" onClick={handleLogout} >
+                    Log out
+                </Button>
+            </div>
         </nav>
     );
 };
