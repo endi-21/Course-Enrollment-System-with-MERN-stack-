@@ -27,7 +27,7 @@ const Login = () => {
 				<TextField
 					className="textfield"
 					id="email"
-					label="Email address"
+					label="Email"
 					variant="standard"
 					name="email"
 					value={email}
@@ -55,7 +55,7 @@ const Login = () => {
 				<Button className='purple' variant="contained" type="submit" disabled={isLoading}>Log in</Button>
 				{error && <div className="error">{error}</div>}
 
-				<Button className="sign-in-up-btn" onClick={navigateToSignup} >
+				<Button onClick={navigateToSignup} >
 					Sign Up
 				</Button>
 			</form>

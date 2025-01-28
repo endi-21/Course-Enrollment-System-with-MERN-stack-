@@ -1,6 +1,12 @@
 import { useState } from "react"
 import { useSignup } from "../hooks/useSignup"
 import { useNavigate } from "react-router-dom"
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 
 const Signup = () => {
 	const [name, setName] = useState('')
@@ -21,79 +27,112 @@ const Signup = () => {
 	}
 
 	const navigateToLogin = () => {
-		navigate('/login'); 
+		navigate('/login');
 	};
 
 	return (
-		<div>
-			<form className="signup" onSubmit={handleSubmit}>
+		<div className="login-container">
+			<form className="login" onSubmit={handleSubmit}>
 				<h3>Sign Up</h3>
 
-				<label>Name:</label>
-				<input
-					type="text"
-					onChange={(e) => setName(e.target.value)}
+				<TextField
+					className="textfield"
+					id="name"
+					label="Name"
+					variant="standard"
+					name="name"
 					value={name}
-				/> <br />
-				<label>Email:</label>
-				<input
-					type="email"
-					onChange={(e) => setEmail(e.target.value)}
+					onChange={(e) => setName(e.target.value)}
+					required
+					fullWidth
+					margin="normal"
+				/>
+
+				<TextField
+					className="textfield"
+					id="email"
+					label="Email"
+					variant="standard"
+					name="email"
 					value={email}
-				/> <br />
+					onChange={(e) => setEmail(e.target.value)}
+					required
+					fullWidth
+					margin="normal"
+				/>
 
-				<label>Password:</label>
-				<input
+				<TextField
+					className="textfield"
+					id="password"
+					label="Password"
+					variant="standard"
 					type="password"
-					onChange={(e) => setPassword(e.target.value)}
+					name="password"
 					value={password}
-				/> <br />
+					onChange={(e) => setPassword(e.target.value)}
+					required
+					fullWidth
+					margin="normal"
+				/> <br /> <br />
 
-				<label>Role:</label>
-				<input
-					type="radio"
-					onChange={(e) => setRole(e.target.value)}
-					value="student"
-					name="role"
-					checked={role === "student"}
-				/>
-				Student
-				<input
-					type="radio"
-					onChange={(e) => setRole(e.target.value)}
-					value="instructor"
-					name="role"
-					checked={role === "instructor"}
-				/>
-				Instructor
-				<br />
+				<FormLabel id="demo-radio-buttons-group-label">Role</FormLabel>
+				<RadioGroup
+					aria-labelledby="demo-radio-buttons-group-label"
+					defaultValue="female"
+					name="radio-buttons-group"
+					row
+				>
+					<FormControlLabel
+						value="student"
+						control={<Radio />}
+						label="Student"
+						onChange={(e) => setRole(e.target.value)}
+					/>
+					<FormControlLabel
+						value="instructor"
+						control={<Radio />}
+						label="Instructor"
+						onChange={(e) => setRole(e.target.value)}
+					/>
+				</RadioGroup>
 
-				<label>Description:</label>
-				<input
-					type="text"
-					onChange={(e) => setDescription(e.target.value)}
+
+				<TextField
+					className="textfield"
+					id="description"
+					label="Description"
+					variant="standard"
+					name="description"
 					value={description}
-				/> <br />
+					onChange={(e) => setDescription(e.target.value)}
+					fullWidth
+					margin="normal"
+				/>
 
-				<label>Profile Picture URL:</label>
-				<input
-					type="text"
-					onChange={(e) => setPic(e.target.value)}
+				<TextField
+					className="textfield"
+					id="profile-pic"
+					label="Profile Picture URL"
+					variant="standard"
+					name="pic"
 					value={pic}
-				/> <br />
+					onChange={(e) => setPic(e.target.value)}
+					fullWidth
+					margin="normal"
+				/>
 
-				<button type="submit" disabled={isLoading}>Sign up</button>
+				<Button className="purple" variant="contained" type="submit" disabled={isLoading}>
+					Sign up
+				</Button>
 				{error && <div className="error">{error}</div>}
-			</form>
 
-			<div >
-				<button onClick={navigateToLogin} >
+				<Button onClick={navigateToLogin}>
 					Log in
-				</button>
-			</div>
+				</Button>
+			</form>
 		</div>
+	);
 
-	)
 }
 
 export default Signup

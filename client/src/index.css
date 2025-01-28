@@ -131,6 +131,7 @@ body {
     border-radius: 8px; 
 }
 
+/* Login */
 .login-container {
     display: flex;
     justify-content: center; 
@@ -141,4 +142,25 @@ body {
 .login {
     width: 30%; 
     text-align: center; 
+}
+
+/* Sign up */
+.MuiFormLabel-root, 
+.MuiFormControlLabel-label, 
+#demo-radio-buttons-group-label {
+    color: white;
+}
+
+.MuiRadio-root.Mui-checked .MuiSvgIcon-root {
+    color: var(--primary-color); 
+}
+
+.MuiRadio-root .MuiSvgIcon-root {
+    color: white; 
+}
+
+#demo-radio-buttons-group-label {
+    margin-right: 16px; 
+    display: flex;
+    align-items: center;
 }
